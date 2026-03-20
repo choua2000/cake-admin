@@ -4,7 +4,11 @@ import {
   TrendingUp,
   MoreVertical,
   ArrowUpRight,
-  ArrowDownRight
+  ArrowDownRight,
+  CheckCircle,
+  AlertCircle,
+  X,
+  Bell
 } from 'lucide-vue-next';
 
 import {
@@ -39,6 +43,24 @@ const isLoading = ref(true);
 
 const selectedTimeframe = ref('Last 7 Days');
 const allOrders = ref<any[]>([]);
+
+// Toast notification
+const toast = reactive({
+  show: false,
+  message: '',
+  type: 'success' as 'success' | 'error'
+});
+
+const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+  toast.show = true;
+  toast.message = message;
+  toast.type = type;
+  setTimeout(() => { toast.show = false; }, 3000);
+};
+
+let pollingInterval: any = null;
+let lastKnownOrderId: number = 0;
+const unreadOrdersCount = ref(0);
 
 // Chart Data
 const chartData = ref<any>({
@@ -145,8 +167,8 @@ const chartOptions = {
 const authStore = useAuthStore();
 const user = computed(() => authStore.user);
 
-const fetchDashboardData = async () => {
-  isLoading.value = true;
+const fetchDashboardData = async (quiet = false) => {
+  if (!quiet) isLoading.value = true;
   try {
     const [productsRes, ordersRes, customersRes, categoriesRes] = await Promise.all([
       api.get('/products'),
@@ -159,6 +181,16 @@ const fetchDashboardData = async () => {
     const orders = ordersRes.data || [];
     const customers = customersRes.data || [];
     const cats = categoriesRes.data || [];
+
+    if (orders.length > 0) {
+      const maxId = Math.max(...orders.map((o: any) => o.id || 0));
+      if (lastKnownOrderId > 0 && maxId > lastKnownOrderId) {
+        const newOrdersList = orders.filter((o: any) => o.id > lastKnownOrderId);
+        unreadOrdersCount.value += newOrdersList.length;
+        showToast(`${newOrdersList.length} new order(s) received!`, 'success');
+      }
+      lastKnownOrderId = maxId;
+    }
 
     allOrders.value = orders;
     updateChartData();
@@ -236,7 +268,7 @@ const fetchDashboardData = async () => {
   } catch (error) {
     console.error('Failed to fetch dashboard data:', error);
   } finally {
-    isLoading.value = false;
+    if (!quiet) isLoading.value = false;
   }
 };
 
@@ -252,8 +284,16 @@ onMounted(() => {
       Legend,
       Filler
     );
+
+    pollingInterval = setInterval(() => {
+      fetchDashboardData(true);
+    }, 10000); // Poll every 10 seconds
   }
   fetchDashboardData();
+});
+
+onUnmounted(() => {
+  if (pollingInterval) clearInterval(pollingInterval);
 });
 
 const getStatusClass = (status: string) => {
@@ -275,10 +315,34 @@ const getStatusClass = (status: string) => {
         <h1 class="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
         <p class="text-gray-500">Welcome back! {{ user?.email }} Here's what's happening today.</p>
       </div>
-      <button @click="navigateTo('/products')" class="btn btn-primary gap-2">
-        <PlusCircle class="w-5 h-5" />
-        New Product
-      </button>
+      <div class="flex gap-2 items-center">
+        <!-- Notification Dropdown -->
+        <div class="dropdown dropdown-end">
+          <label tabindex="0" class="btn btn-ghost btn-circle relative">
+            <div class="indicator">
+              <span v-if="unreadOrdersCount > 0" class="indicator-item badge badge-primary badge-sm animate-bounce">{{
+                unreadOrdersCount }}</span>
+              <Bell class="w-6 h-6 text-gray-600" />
+            </div>
+          </label>
+          <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+            <li v-if="unreadOrdersCount > 0">
+              <a @click="navigateTo('/orders'); unreadOrdersCount = 0" class="flex justify-between">
+                <span>New Orders</span>
+                <span class="badge badge-primary">{{ unreadOrdersCount }}</span>
+              </a>
+            </li>
+            <li v-else>
+              <a class="text-gray-400">No new notifications</a>
+            </li>
+          </ul>
+        </div>
+
+        <button @click="navigateTo('/products')" class="btn btn-primary gap-2">
+          <PlusCircle class="w-5 h-5" />
+          New Product
+        </button>
+      </div>
     </div>
 
     <!-- Stats Grid -->
@@ -394,4 +458,27 @@ const getStatusClass = (status: string) => {
       </div>
     </div>
   </div>
+
+  <!-- Toast Notification -->
+  <Transition enter-active-class="transition-all duration-300 ease-out" enter-from-class="translate-y-4 opacity-0"
+    enter-to-class="translate-y-0 opacity-100" leave-active-class="transition-all duration-200 ease-in"
+    leave-from-class="translate-y-0 opacity-100" leave-to-class="-translate-y-2 opacity-0">
+    <div v-if="toast.show" class="fixed top-6 right-6 z-[100] max-w-sm">
+      <div class="flex items-center gap-3 px-5 py-4 rounded-2xl shadow-2xl border backdrop-blur-sm" :class="[
+        toast.type === 'success'
+          ? 'bg-green-50 border-green-200 text-green-800'
+          : 'bg-red-50 border-red-200 text-red-800'
+      ]">
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+          :class="toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'">
+          <CheckCircle v-if="toast.type === 'success'" class="w-5 h-5 text-white" />
+          <AlertCircle v-else class="w-5 h-5 text-white" />
+        </div>
+        <p class="font-bold text-sm">{{ toast.message }}</p>
+        <button @click="toast.show = false" class="ml-auto opacity-50 hover:opacity-100 transition-opacity">
+          <X class="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  </Transition>
 </template>
