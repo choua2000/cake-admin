@@ -164,13 +164,13 @@ const exportCSV = () => {
   <div class="space-y-6">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
-        <h1 class="text-3xl font-bold text-gray-900">Orders</h1>
-        <p class="text-gray-500">Track and manage customer orders efficiently.</p>
+        <h1 class="text-3xl font-bold text-gray-900">ລາຍການສັ່ງຊື້</h1>
+        <p class="text-gray-500">ຕິດຕາມ ແລະ ຈັດການລາຍການສັ່ງຊື້ຂອງລູກຄ້າຢ່າງມີປະສິດທິຜົນ.</p>
       </div>
       <div class="flex gap-2">
         <button @click="exportCSV" class="btn btn-success border-gray-200 text-white gap-2 h-12 rounded-xl px-6">
           <Download class="w-5 h-5" />
-          Export CSV
+          ສົ່ງອອກ CSV
         </button>
       </div>
     </div>
@@ -179,7 +179,7 @@ const exportCSV = () => {
     <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4">
       <div class="relative flex-1">
         <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-        <input v-model="searchQuery" type="text" placeholder="Search by ID, customer, email, status..."
+        <input v-model="searchQuery" type="text" placeholder="ຄົ້ນຫາຕາມລະຫັດ, ລູກຄ້າ, ອີເມວ, ສະຖານະ..."
           class="input input-bordered w-full pl-12 pr-10 bg-gray-50 border-gray-200 focus:border-primary rounded-xl" />
         <button v-if="searchQuery" @click="searchQuery = ''"
           class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors">
@@ -202,7 +202,7 @@ const exportCSV = () => {
             class="btn btn-ghost bg-gray-50 border border-gray-200 rounded-xl gap-2 h-12"
             :class="statusFilter ? 'border-primary text-primary' : ''">
             <Filter class="w-5 h-5" />
-            {{ statusFilter ? statusFilter.charAt(0).toUpperCase() + statusFilter.slice(1) : 'Status' }}
+            {{ statusFilter ? statusFilter.charAt(0).toUpperCase() + statusFilter.slice(1) : 'ສະຖານະ' }}
             <X v-if="statusFilter" @click.stop="statusFilter = ''; isStatusDropdownOpen = false"
               class="w-4 h-4 ml-1 hover:text-red-500" />
           </button>
@@ -214,7 +214,7 @@ const exportCSV = () => {
               :class="(s === 'all' && !statusFilter) || statusFilter === s ? 'text-primary bg-primary/5' : 'text-gray-600'">
               {{ s }}
               <span v-if="s !== 'all'" class="badge badge-xs" :class="getStatusBadge(s)">{{orders.filter((o: any) =>
-                o.status?.toLowerCase() === s).length }}</span>
+                o.status?.toLowerCase() === s).length}}</span>
             </button>
           </div>
         </div>
@@ -228,15 +228,15 @@ const exportCSV = () => {
           <thead>
             <tr class="bg-gray-50/50 bg-gray-300">
               <!-- <th class="text-gray-500 font-semibold px-6 py-4">Order ID</th> -->
-              <th class="text-gray-500 font-semibold px-6 py-4">Customer</th>
-              <th class="text-gray-500 font-semibold px-6 py-4">Quantity_Items</th>
-              <th class="text-gray-500 font-semibold px-6 py-4">Email</th>
-              <th class="text-gray-500 font-semibold px-6 py-4">Phone</th>
-              <th class="text-gray-500 font-semibold px-6 py-4 text-center">Date</th>
-              <th class="text-gray-500 font-semibold px-6 py-4 text-center">Status</th>
-              <th class="text-gray-500 font-semibold px-6 py-4 text-center">Payment</th>
-              <th class="text-gray-500 font-semibold px-6 py-4 text-right">Amount</th>
-              <th class="text-gray-500 font-semibold px-6 py-4 text-right">Actions</th>
+              <th class="text-gray-500 font-semibold px-6 py-4">ລູກຄ້າ</th>
+              <th class="text-gray-500 font-semibold px-6 py-4">ຈຳນວນຊິ້ນ</th>
+              <th class="text-gray-500 font-semibold px-6 py-4">ອີເມວ</th>
+              <th class="text-gray-500 font-semibold px-6 py-4">ເບີໂທ</th>
+              <th class="text-gray-500 font-semibold px-6 py-4 text-center">ວັນທີ</th>
+              <th class="text-gray-500 font-semibold px-6 py-4 text-center">ສະຖານະ</th>
+              <th class="text-gray-500 font-semibold px-6 py-4 text-center">ການຈ່າຍເງິນ</th>
+              <th class="text-gray-500 font-semibold px-6 py-4 text-right">ຈຳນວນເງິນ</th>
+              <th class="text-gray-500 font-semibold px-6 py-4 text-right">ການຈັດການ</th>
             </tr>
           </thead>
           <tbody v-if="!isLoading">
@@ -267,7 +267,7 @@ const exportCSV = () => {
                 <button @click="viewOrderDetails(order)"
                   class="btn btn-ghost btn-sm text-primary hover:bg-primary/10 rounded-lg">
                   <Eye class="w-4 h-4 mr-1" />
-                  Details
+                  ລາຍລະອຽດ
                 </button>
               </td>
             </tr>
@@ -276,7 +276,7 @@ const exportCSV = () => {
             <tr>
               <td colspan="7" class="text-center py-12">
                 <span class="loading loading-spinner loading-lg text-primary"></span>
-                <p class="mt-2 text-gray-400">Loading orders...</p>
+                <p class="mt-2 text-gray-400">ກຳລັງໂຫຼດລາຍການສັ່ງຊື້...</p>
               </td>
             </tr>
           </tbody>
@@ -285,7 +285,7 @@ const exportCSV = () => {
 
       <!-- Pagination -->
       <div class="p-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p class="text-sm text-gray-500">Showing {{ orders.length }} orders</p>
+        <p class="text-sm text-gray-500">ກຳລັງສະແດງ {{ orders.length }} ລາຍການສັ່ງຊື້</p>
         <div class="flex gap-2">
           <button class="btn btn-ghost btn-sm rounded-lg border border-gray-200">
             <ChevronLeft class="w-4 h-4" />
@@ -305,7 +305,7 @@ const exportCSV = () => {
         class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
         <div class="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
           <div>
-            <h2 class="text-xl font-bold text-gray-900 text-left">Order #{{ selectedOrder?.id }}</h2>
+            <h2 class="text-xl font-bold text-gray-900 text-left">ລະຫັດສັ່ງຊື້ #{{ selectedOrder?.id }}</h2>
             <p class="text-xs text-gray-500 text-left">{{ formatDate(selectedOrder?.order_date) }}</p>
           </div>
           <button @click="isModalOpen = false" class="btn btn-ghost btn-circle btn-sm">
@@ -317,13 +317,13 @@ const exportCSV = () => {
           <!-- Customer Info -->
           <div class="grid grid-cols-2 gap-8">
             <div class="text-left">
-              <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Customer Details</p>
+              <p class="text-sm font-bold text-gray-600 uppercase tracking-widest mb-2">ລາຍລະອຽດລູກຄ້າ</p>
               <p class="font-bold text-gray-900 text-lg">{{ selectedOrder?.user?.name }}</p>
               <p class="text-sm text-gray-500 italic">{{ selectedOrder?.user?.email }}</p>
               <p class="text-xs text-gray-400 mt-1">{{ selectedOrder?.user?.phone }}</p>
             </div>
             <div class="text-right">
-              <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Payment</p>
+              <p class="text-sm font-bold text-gray-600 uppercase tracking-widest mb-2">ການຈ່າຍເງິນ</p>
               <span class="inline-block font-bold text-sm uppercase"
                 :class="getPaymentBadge(selectedOrder?.payment_method)">
                 {{ selectedOrder?.payment_method || 'N/A' }}
@@ -333,7 +333,7 @@ const exportCSV = () => {
 
           <!-- Order Summary -->
           <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 text-left">Order Items</p>
+            <p class="text-sm font-bold text-gray-600 uppercase tracking-widest mb-4 text-left">ລາຍການສິນຄ້າ</p>
             <div class="space-y-4">
               <div v-for="item in (selectedOrder?.items || [])" :key="item.id"
                 class="flex justify-between items-center">
@@ -350,7 +350,7 @@ const exportCSV = () => {
                 <p class="font-bold text-gray-900">LKR {{ parseFloat(item.subtotal).toLocaleString() }}</p>
               </div>
               <div class="pt-4 mt-4 border-t border-gray-200 flex justify-between items-center">
-                <p class="font-bold text-gray-900 text-lg">Total Amount</p>
+                <p class="font-bold text-gray-900 text-lg">ລວມທັງໝົດ</p>
                 <p class="font-bold text-primary text-2xl">LKR {{ parseFloat(selectedOrder?.total_amount ||
                   0).toLocaleString() }}</p>
               </div>
@@ -359,7 +359,7 @@ const exportCSV = () => {
 
           <!-- Status Update -->
           <div>
-            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 text-left">Update Status</p>
+            <p class="text-sm font-bold text-gray-600 uppercase tracking-widest mb-4 text-left">ອັບເດດສະຖານະ</p>
             <div class="flex flex-wrap gap-2 justify-start">
               <button v-for="status in ['pending', 'processing', 'completed', 'cancelled']" :key="status"
                 @click="updateStatus(selectedOrder?.id, status)"
@@ -373,10 +373,10 @@ const exportCSV = () => {
         </div>
 
         <div class="p-6 bg-gray-50/50 border-t border-gray-100 flex justify-end gap-3">
-          <button class="btn btn-ghost rounded-xl px-6" @click="isModalOpen = false">Close</button>
+          <button class="btn btn-ghost rounded-xl px-6" @click="isModalOpen = false">ປິດ</button>
           <button class="btn btn-primary rounded-xl px-6 gap-2 shadow-lg shadow-primary/20">
             <Download class="w-4 h-4" />
-            Print Invoice
+            ພິມໃບບິນ
           </button>
         </div>
       </div>

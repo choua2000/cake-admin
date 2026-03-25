@@ -20,19 +20,19 @@ const toggleSidebar = () => {
 const authStore = useAuthStore();
 const user = computed(() => authStore.user);
 const handleLogout = () => {
-  if (confirm('Are you sure you want to logout?')) {
+  if (confirm('ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການອອກຈາກລະບົບ?')) {
     authStore.logout();
   }
 };
 
 const navItems = [
-  { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
-  { name: 'Categories', icon: Tags, path: '/categories' },
-  { name: 'Products', icon: ShoppingBasket, path: '/products' },
-  { name: 'Orders', icon: ShoppingCart, path: '/orders' },
-  { name: 'Customers', icon: Users, path: '/customers' },
-  { name: 'Reports', icon: BarChart3, path: '/reports' },
-  { name: 'Settings', icon: Settings, path: '/settings' },
+  { name: 'ແຜງຄວບຄຸມ', icon: LayoutDashboard, path: '/' },
+  { name: 'ໝວດໝູ່', icon: Tags, path: '/categories' },
+  { name: 'ສິນຄ້າ', icon: ShoppingBasket, path: '/products' },
+  { name: 'ລາຍການສັ່ງຊື້', icon: ShoppingCart, path: '/orders' },
+  { name: 'ລູກຄ້າ', icon: Users, path: '/customers' },
+  { name: 'ລາຍງານ', icon: BarChart3, path: '/reports' },
+  { name: 'ການຕັ້ງຄ່າ', icon: Settings, path: '/settings' },
 ];
 </script>
 
@@ -73,7 +73,7 @@ const navItems = [
         <button @click="handleLogout"
           class="flex items-center gap-4 w-full px-4 py-3 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200">
           <LogOut class="w-5 h-5" />
-          <span v-if="isSidebarOpen" class="font-medium">Logout</span>
+          <span v-if="isSidebarOpen" class="font-medium">ອອກຈາກລະບົບ</span>
         </button>
       </div>
     </aside>

@@ -17,8 +17,10 @@ export default defineNuxtConfig({
     strict: true
   },
   runtimeConfig: {
+    apiBase: 'http://localhost:5001/api', // Server-side base URL (overridden by NUXT_API_BASE)
     public: {
-      apiBase: 'http://localhost:5000/api',
+      apiBase: 'http://localhost:5001/api', // Client-side base URL (overridden by NUXT_PUBLIC_API_BASE)
     }
   }
+
 })

@@ -31,17 +31,17 @@ definePageMeta({
 
 const api = useApi();
 const stats = ref([
-  { label: 'Total Revenue', value: 'LKR 0', change: '+0%', isPositive: true, icon: TrendingUp },
-  { label: 'Total Orders', value: '0', change: '+0%', isPositive: true, icon: TrendingUp },
-  { label: 'Active Products', value: '0', change: '+0%', isPositive: true, icon: TrendingUp },
-  { label: 'Total Customers', value: '0', change: '+0%', isPositive: true, icon: TrendingUp },
+  { label: 'ລາຍຮັບທັງໝົດ', value: 'LKR 0', change: '+0%', isPositive: true, icon: TrendingUp },
+  { label: 'ລາຍການສັ່ງຊື້ທັງໝົດ', value: '0', change: '+0%', isPositive: true, icon: TrendingUp },
+  { label: 'ສິນຄ້າທີ່ມີຢູ່', value: '0', change: '+0%', isPositive: true, icon: TrendingUp },
+  { label: 'ລູກຄ້າທັງໝົດ', value: '0', change: '+0%', isPositive: true, icon: TrendingUp },
 ]);
 
 const recentOrders = ref<any[]>([]);
 const categories = ref<any[]>([]);
 const isLoading = ref(true);
 
-const selectedTimeframe = ref('Last 7 Days');
+const selectedTimeframe = ref('7 ມື້ຜ່ານມາ');
 const allOrders = ref<any[]>([]);
 
 // Toast notification
@@ -66,7 +66,7 @@ const unreadOrdersCount = ref(0);
 const chartData = ref<any>({
   labels: [],
   datasets: [{
-    label: 'Revenue (LKR)',
+    label: 'ລາຍຮັບ (LKR)',
     backgroundColor: 'rgba(255, 77, 109, 0.1)',
     borderColor: '#ff4d6d',
     fill: true,
@@ -80,7 +80,7 @@ const chartData = ref<any>({
 });
 
 const updateChartData = () => {
-  const days = selectedTimeframe.value === 'Last 7 Days' ? 7 : selectedTimeframe.value === 'Last 30 Days' ? 30 : 365;
+  const days = selectedTimeframe.value === '7 ມື້ຜ່ານມາ' ? 7 : selectedTimeframe.value === '30 ມື້ຜ່ານມາ' ? 30 : 365;
   const labels: string[] = [];
   const data: number[] = [];
 
@@ -120,7 +120,7 @@ const updateChartData = () => {
   chartData.value = {
     labels,
     datasets: [{
-      label: 'Revenue (LKR)',
+      label: 'ລາຍຮັບ (LKR)',
       backgroundColor: 'rgba(255, 77, 109, 0.1)',
       borderColor: '#ff4d6d',
       fill: true,
@@ -187,7 +187,7 @@ const fetchDashboardData = async (quiet = false) => {
       if (lastKnownOrderId > 0 && maxId > lastKnownOrderId) {
         const newOrdersList = orders.filter((o: any) => o.id > lastKnownOrderId);
         unreadOrdersCount.value += newOrdersList.length;
-        showToast(`${newOrdersList.length} new order(s) received!`, 'success');
+        showToast(`ມີການສັ່ງຊື້ໃໝ່ ${newOrdersList.length} ລາຍການ!`, 'success');
       }
       lastKnownOrderId = maxId;
     }
@@ -249,8 +249,8 @@ const fetchDashboardData = async (quiet = false) => {
     // Recent Orders (last 5)
     recentOrders.value = orders.slice(0, 5).map((order: any) => ({
       id: `#${order.id}`,
-      customer: order.user?.name || 'Guest',
-      product: `${order.items?.length || 0} items`,
+      customer: order.user?.name || 'ແຂກ',
+      product: `${order.items?.length || 0} ລາຍການ`,
       status: order.status || 'pending',
       amount: `LKR ${parseFloat(order.total_amount || 0).toLocaleString()}`
     }));
@@ -312,8 +312,8 @@ const getStatusClass = (status: string) => {
     <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
-        <h1 class="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
-        <p class="text-gray-500">Welcome back! {{ user?.email }} Here's what's happening today.</p>
+        <h1 class="text-3xl font-bold text-gray-900">ພາບລວມຂອງໜ້າຫຼັກ</h1>
+        <p class="text-gray-500">ຍິນດີຕ້ອນຮັບກັບຄືນມາ! {{ user?.email }} ນີ້ແມ່ນສິ່ງທີ່ເກີດຂຶ້ນໃນມື້ນີ້.</p>
       </div>
       <div class="flex gap-2 items-center">
         <!-- Notification Dropdown -->
@@ -328,19 +328,19 @@ const getStatusClass = (status: string) => {
           <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
             <li v-if="unreadOrdersCount > 0">
               <a @click="navigateTo('/orders'); unreadOrdersCount = 0" class="flex justify-between">
-                <span>New Orders</span>
+                <span>ລາຍການສັ່ງຊື້ໃໝ່</span>
                 <span class="badge badge-primary">{{ unreadOrdersCount }}</span>
               </a>
             </li>
             <li v-else>
-              <a class="text-gray-400">No new notifications</a>
+              <a class="text-gray-400">ບໍ່ມີການແຈ້ງເຕືອນໃໝ່</a>
             </li>
           </ul>
         </div>
 
         <button @click="navigateTo('/products')" class="btn btn-primary gap-2">
           <PlusCircle class="w-5 h-5" />
-          New Product
+          ເພີ່ມສິນຄ້າໃໝ່
         </button>
       </div>
     </div>
@@ -374,11 +374,11 @@ const getStatusClass = (status: string) => {
       <!-- Sales Chart Mockup -->
       <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div class="flex items-center justify-between mb-8">
-          <h2 class="text-lg font-bold text-gray-900">Sales Analytics</h2>
+          <h2 class="text-lg font-bold text-gray-900">ການວິເຄາະຍອດຂາຍ</h2>
           <select v-model="selectedTimeframe" class="select select-sm select-bordered">
-            <option>Last 7 Days</option>
-            <option>Last 30 Days</option>
-            <option>This Year</option>
+            <option>7 ມື້ຜ່ານມາ</option>
+            <option>30 ມື້ຜ່ານມາ</option>
+            <option>ປີນີ້</option>
           </select>
         </div>
         <!-- Placeholder for Chart -->
@@ -396,9 +396,9 @@ const getStatusClass = (status: string) => {
 
       <!-- Top Categories -->
       <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-        <h2 class="text-lg font-bold text-gray-900 mb-6">Top Categories</h2>
+        <h2 class="text-lg font-bold text-gray-900 mb-6">ໝວດໝູ່ຍອດນິຍົມ</h2>
         <div class="space-y-4">
-          <div v-if="categories.length === 0" class="text-center py-6 text-gray-400 text-sm">No categories yet.</div>
+          <div v-if="categories.length === 0" class="text-center py-6 text-gray-400 text-sm">ຍັງບໍ່ມີໝວດໝູ່ເທື່ອ.</div>
           <div v-for="(cat, index) in categories" :key="cat.name" class="space-y-2">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-3">
@@ -408,7 +408,7 @@ const getStatusClass = (status: string) => {
                 <span class="text-sm font-medium text-gray-700">{{ cat.name }}</span>
               </div>
               <div class="flex items-center gap-2">
-                <span class="text-xs font-bold text-gray-500">{{ cat.count }} products</span>
+                <span class="text-xs font-bold text-gray-500">{{ cat.count }} ສິນຄ້າ</span>
                 <span class="text-xs font-bold text-gray-400">{{ cat.percent }}%</span>
               </div>
             </div>
@@ -419,8 +419,8 @@ const getStatusClass = (status: string) => {
             </div>
           </div>
           <div class="pt-6 mt-6 border-t border-gray-100">
-            <button @click="navigateTo('/reports')" class="btn btn-outline btn-primary btn-block">View All
-              Reports</button>
+            <button @click="navigateTo('/reports')"
+              class="btn btn-outline btn-primary btn-block">ເບິ່ງລາຍງານທັງໝົດ</button>
           </div>
         </div>
       </div>
@@ -429,18 +429,18 @@ const getStatusClass = (status: string) => {
     <!-- Recent Orders -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       <div class="p-6 border-b border-gray-100 flex items-center justify-between">
-        <h2 class="text-lg font-bold text-gray-900">Recent Orders</h2>
-        <NuxtLink to="/orders" class="text-primary text-sm font-semibold hover:underline">View All</NuxtLink>
+        <h2 class="text-lg font-bold text-gray-900">ລາຍການສັ່ງຊື້ຫຼ້າສຸດ</h2>
+        <NuxtLink to="/orders" class="text-primary text-sm font-semibold hover:underline">ເບິ່ງທັງໝົດ</NuxtLink>
       </div>
       <div class="overflow-x-auto">
         <table class="table w-full">
           <thead>
             <tr class="bg-gray-50/50">
-              <th class="text-gray-500 font-semibold px-6 py-4">Order ID</th>
-              <th class="text-gray-500 font-semibold px-6 py-4">Customer</th>
-              <th class="text-gray-500 font-semibold px-6 py-4">Product</th>
-              <th class="text-gray-500 font-semibold px-6 py-4">Status</th>
-              <th class="text-gray-500 font-semibold px-6 py-4">Amount</th>
+              <th class="text-gray-500 font-semibold px-6 py-4">ລະຫັດສັ່ງຊື້</th>
+              <th class="text-gray-500 font-semibold px-6 py-4">ລູກຄ້າ</th>
+              <th class="text-gray-500 font-semibold px-6 py-4">ສິນຄ້າ</th>
+              <th class="text-gray-500 font-semibold px-6 py-4">ສະຖານະ</th>
+              <th class="text-gray-500 font-semibold px-6 py-4">ຈຳນວນເງິນ</th>
             </tr>
           </thead>
           <tbody>

@@ -76,20 +76,20 @@ const saveCategory = async () => {
         closeModal();
     } catch (error: any) {
         console.error('Failed to save category:', error);
-        alert(error.data?.message || 'Failed to save category');
+        alert(error.data?.message || 'ການບັນທຶກໝວດໝູ່ລົ້ມເຫລວ');
     } finally {
         isSubmitting.value = false;
     }
 };
 
 const deleteCategory = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this category?')) return;
+    if (!confirm('ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບໝວດໝູ່ນີ້?')) return;
     try {
         await api.delete(`/categories/${id}`);
         categories.value = categories.value.filter(c => c.id !== id);
     } catch (error: any) {
-        console.error('Failed to delete category:', error);
-        alert(error.data?.message || 'Failed to delete category');
+        console.error('ການລຶບໝວດໝູ່ລົ້ມເຫລວ:', error);
+        alert(error.data?.message || 'ການລຶບໝວດໝູ່ລົ້ມເຫລວ');
     }
 };
 
@@ -102,12 +102,12 @@ onMounted(() => {
     <div class="space-y-6">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900">Categories</h1>
-                <p class="text-gray-500">Manage product categories for your store.</p>
+                <h1 class="text-3xl font-bold text-gray-900">ໝວດໝູ່ສິນຄ້າ</h1>
+                <p class="text-gray-600">ຈັດການໝວດໝູ່ສິນຄ້າສຳລັບຮ້ານຂອງທ່ານ.</p>
             </div>
             <button @click="openModal()" class="btn btn-primary gap-2">
                 <PlusCircle class="w-5 h-5" />
-                New Category
+                ເພີ່ມໝວດໝູ່ໃໝ່
             </button>
         </div>
 
@@ -115,7 +115,7 @@ onMounted(() => {
         <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
             <div class="relative">
                 <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input v-model="searchQuery" type="text" placeholder="Search categories..."
+                <input v-model="searchQuery" type="text" placeholder="ຄົ້ນຫາໝວດໝູ່..."
                     class="input input-bordered w-full pl-12 pr-10 bg-gray-50 border-gray-200 focus:border-primary rounded-xl" />
                 <button v-if="searchQuery" @click="searchQuery = ''"
                     class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors">
@@ -130,9 +130,9 @@ onMounted(() => {
                 <table class="table w-full">
                     <thead>
                         <tr class="border-b border-gray-100 bg-gray-300">
-                            <th class="text-gray-500 font-semibold px-6 py-4">Name</th>
-                            <th class="text-gray-500 font-semibold px-6 py-4">Description</th>
-                            <th class="text-gray-500 font-semibold px-6 py-4 text-right">Actions</th>
+                            <th class="text-gray-600 font-semibold px-6 py-4">ຊື່ໝວດໝູ່</th>
+                            <th class="text-gray-600 font-semibold px-6 py-4">ລາຍລະອຽດ</th>
+                            <th class="text-gray-600 font-semibold px-6 py-4 text-right">ການຈັດການ</th>
                         </tr>
                     </thead>
                     <tbody v-if="isLoading">
@@ -146,7 +146,7 @@ onMounted(() => {
                         <tr>
                             <td colspan="3" class="text-center py-16 text-gray-400">
                                 <Tags class="w-12 h-12 text-gray-200 mx-auto mb-3" />
-                                <p class="font-medium text-gray-400">No categories found.</p>
+                                <p class="font-medium text-gray-400">ບໍ່ພົບໝວດໝູ່ເລີຍ.</p>
                             </td>
                         </tr>
                     </tbody>
@@ -172,7 +172,7 @@ onMounted(() => {
                 </table>
             </div>
             <div class="px-6 py-4 border-t border-gray-100 text-sm text-gray-400">
-                Total: {{ filteredCategories.length }} categories
+                ທັງໝົດ: {{ filteredCategories.length }} ໝວດໝູ່
             </div>
         </div>
 
@@ -186,37 +186,37 @@ onMounted(() => {
                 </form>
 
                 <div class="p-6 border-b border-gray-100 bg-gray-50">
-                    <h3 class="font-bold text-xl text-gray-900">{{ isEditMode ? 'Edit Category' : 'Create Category' }}
+                    <h3 class="font-bold text-xl text-gray-900">{{ isEditMode ? 'ແກ້ໄຂໝວດໝູ່' : 'ເພີ່ມໝວດໝູ່ໃໝ່' }}
                     </h3>
                     <p class="text-sm text-gray-500 mt-1">
-                        <span v-if="isEditMode">Update this category details.</span>
-                        <span v-else>Add a new category for your products.</span>
+                        <span v-if="isEditMode">ອັບເດດລາຍລະອຽດຂອງໝວດໝູ່ນີ້.</span>
+                        <span v-else>ເພີ່ມໝວດໝູ່ໃໝ່ສຳລັບສິນຄ້າຂອງທ່ານ.</span>
                     </p>
                 </div>
 
                 <div class="p-6">
                     <form @submit.prevent="saveCategory" class="space-y-4">
                         <div class="space-y-2">
-                            <label class="text-sm font-semibold text-gray-700 ml-1">Category Name <span
+                            <label class="text-sm font-semibold text-gray-700 ml-1">ຊື່ໝວດໝູ່ <span
                                     class="text-red-500">*</span></label>
                             <input v-model="formCategory.name" type="text"
                                 class="input input-bordered w-full rounded-xl focus:border-primary" required
-                                placeholder="e.g. Wedding Cakes" />
+                                placeholder="ເຊັ່ນ: ເຄັກວັນເກີດ" />
                         </div>
                         <div class="space-y-2">
-                            <label class="text-sm font-semibold text-gray-700 ml-1">Description</label>
+                            <label class="text-sm font-semibold text-gray-700 ml-1">ລາຍລະອຽດ</label>
                             <textarea v-model="formCategory.description"
                                 class="textarea textarea-bordered w-full rounded-xl focus:border-primary h-24"
-                                placeholder="Optional brief description of the category..."></textarea>
+                                placeholder="ລາຍລະອຽດໂດຍຫຍໍ້ຂອງໝວດໝູ່ (ທາງເລືອກ)..."></textarea>
                         </div>
 
                         <div class="mt-8 flex gap-3 pt-4 border-t border-gray-100">
                             <button type="button" class="btn btn-ghost flex-1 rounded-xl"
-                                @click="closeModal">Cancel</button>
+                                @click="closeModal">ຍົກເລີກ</button>
                             <button type="submit" class="btn btn-primary flex-1 rounded-xl shadow-lg shadow-primary/20"
                                 :disabled="isSubmitting || !formCategory.name">
                                 <span v-if="isSubmitting" class="loading loading-spinner loading-sm"></span>
-                                {{ isEditMode ? 'Save Changes' : 'Create Category' }}
+                                {{ isEditMode ? 'ບັນທຶກການປ່ຽນແປງ' : 'ສ້າງໝວດໝູ່' }}
                             </button>
                         </div>
                     </form>

@@ -22,7 +22,7 @@ const handleForgotPassword = async () => {
         isSuccess.value = true;
     } catch (error: any) {
         console.error('Forgot password error:', error);
-        errorMessage.value = error.data?.message || 'Failed to send reset code. Please check the email and try again.';
+        errorMessage.value = error.data?.message || 'ບໍ່ສາມາດສົ່ງລະຫັດໄດ້, ກະລຸນາກວດສອບອີເມວຂອງທ່ານແລະລອງໃໝ່ອີກຄັ້ງ.';
     } finally {
         isLoading.value = false;
     }
@@ -42,9 +42,9 @@ const handleForgotPassword = async () => {
                 <Cake class="w-10 h-10 text-white" />
             </div>
 
-            <h1 class="text-3xl font-extrabold text-gray-900 mb-2">Forgot Password</h1>
+            <h1 class="text-3xl font-extrabold text-gray-900 mb-2">ລືມລະຫັດຜ່ານ</h1>
             <p class="text-gray-500 mb-8 text-center px-4">
-                {{ isSuccess ? 'Check your email for the reset link.' : 'Enter your email to reset password.' }}
+                {{ isSuccess ? 'ກວດສອບອີເມວຂອງທ່ານສຳລັບລິ້ງປ່ຽນລະຫັດຜ່ານ.' : 'ປ້ອນອີເມວຂອງທ່ານເພື່ອຕັ້ງລະຫັດຜ່ານໃໝ່.' }}
             </p>
 
             <div v-if="isSuccess" class="w-full flex flex-col items-center">
@@ -52,11 +52,12 @@ const handleForgotPassword = async () => {
                     <CheckCircle class="w-8 h-8 text-green-500" />
                 </div>
                 <p class="text-sm text-gray-600 text-center mb-8">
-                    We've sent a password reset link to <span class="font-bold text-gray-900">{{ email }}</span>. Please
-                    check your inbox and follow the instructions.
+                    ພວກເຮົາໄດ້ສົ່ງລິ້ງປ່ຽນລະຫັດຜ່ານໄປຍັງ <span class="font-bold text-gray-900">{{ email }}</span> ແລ້ວ.
+                    ກະລຸນາ
+                    ກວດສອບກ່ອງຂໍ້ຄວາມຂອງທ່ານແລະປະຕິບັດຕາມຄຳແນະນຳ.
                 </p>
                 <NuxtLink to="/login" class="btn btn-outline btn-primary w-full h-12 rounded-xl text-lg font-bold">
-                    Back to Login
+                    ກັບຄືນໜ້າເຂົ້າສູ່ລະບົບ
                 </NuxtLink>
             </div>
 
@@ -67,7 +68,7 @@ const handleForgotPassword = async () => {
                 </div>
 
                 <div class="space-y-2">
-                    <label class="text-sm font-bold text-gray-700 ml-1">Email Address</label>
+                    <label class="text-sm font-bold text-gray-700 ml-1">ທີ່ຢູ່ອີເມວ</label>
                     <div class="relative">
                         <Mail class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <input v-model="email" type="email" placeholder="admin@cakestore.com"
@@ -80,14 +81,14 @@ const handleForgotPassword = async () => {
                     class="btn btn-primary w-full h-12 rounded-xl text-lg font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
                     :disabled="isLoading">
                     <span v-if="isLoading" class="loading loading-spinner"></span>
-                    Send Reset Link
+                    ສົ່ງລິ້ງປ່ຽນລະຫັດຜ່ານ
                 </button>
 
                 <div class="text-center pt-4">
                     <NuxtLink to="/login"
                         class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-primary transition-colors">
                         <ArrowLeft class="w-4 h-4" />
-                        Back to Login
+                        ກັບຄືນໜ້າເຂົ້າສູ່ລະບົບ
                     </NuxtLink>
                 </div>
             </form>

@@ -17,15 +17,15 @@ definePageMeta({
 
 const api = useApi();
 const products = ref<any[]>([]);
-const categories = ref<string[]>(['All Categories']);
+const categories = ref<string[]>(['ທຸກໝວດໝູ່']);
 const searchQuery = ref('');
-const selectedCategory = ref('All Categories');
+const selectedCategory = ref('ທຸກໝວດໝູ່');
 const isLoading = ref(true);
 
 const fetchCategories = async () => {
   try {
     const response: any = await api.get('/categories');
-    categories.value = ['All Categories', ...response.map((c: any) => c.name)];
+    categories.value = ['ທຸກໝວດໝູ່', ...response.map((c: any) => c.name)];
   } catch (error) {
     console.error('Failed to fetch categories:', error);
   }
@@ -46,7 +46,7 @@ const fetchProducts = async () => {
 const filteredProducts = computed(() => {
   return products.value.filter((product: any) => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.value.toLowerCase());
-    const matchesCategory = selectedCategory.value === 'All Categories' ||
+    const matchesCategory = selectedCategory.value === 'ທຸກໝວດໝູ່' ||
       (product.category && product.category.name === selectedCategory.value) ||
       (product.category_name === selectedCategory.value);
     return matchesSearch && matchesCategory;
@@ -54,7 +54,7 @@ const filteredProducts = computed(() => {
 });
 
 const deleteProduct = async (id: number) => {
-  if (confirm('Are you sure you want to delete this product?')) {
+  if (confirm('ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບສິນຄ້ານີ້?')) {
     try {
       await api.delete(`/products/${id}`);
       products.value = products.value.filter((p: any) => p.id !== id);
@@ -99,12 +99,12 @@ const getStatusClass = (stock: number) => {
   <div class="space-y-6">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
-        <h1 class="text-3xl font-bold text-gray-900">Products</h1>
-        <p class="text-gray-500">Manage your bakery inventory and pricing.</p>
+        <h1 class="text-3xl font-bold text-gray-900">ສິນຄ້າ</h1>
+        <p class="text-gray-500">ຈັດການສິນຄ້າຄົງຄັງ ແລະ ລາຄາໃນຮ້ານຂອງທ່ານ.</p>
       </div>
       <NuxtLink to="/products/create" class="btn btn-primary gap-2 h-12 rounded-xl">
         <Plus class="w-5 h-5" />
-        Add Product
+        ເພີ່ມສິນຄ້າ
       </NuxtLink>
     </div>
 
@@ -112,7 +112,7 @@ const getStatusClass = (stock: number) => {
     <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4">
       <div class="relative flex-1">
         <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-        <input v-model="searchQuery" type="text" placeholder="Search products..."
+        <input v-model="searchQuery" type="text" placeholder="ຄົ້ນຫາສິນຄ້າ..."
           class="input input-bordered w-full pl-12 bg-gray-50 border-gray-200 focus:border-primary rounded-xl" />
       </div>
       <div class="flex gap-4">
@@ -122,7 +122,7 @@ const getStatusClass = (stock: number) => {
         </select>
         <button class="btn btn-ghost bg-gray-50 border border-gray-200 rounded-xl gap-2 h-12">
           <Filter class="w-5 h-5" />
-          More Filters
+          ຕົວກອງເພີ່ມເຕີມ
         </button>
       </div>
     </div>
@@ -133,12 +133,12 @@ const getStatusClass = (stock: number) => {
         <table class="table w-full">
           <thead>
             <tr class="bg-gray-50/50 bg-gray-300">
-              <th class="text-gray-500 font-semibold px-6 py-4">Product</th>
-              <th class="text-gray-500 font-semibold px-6 py-4">Category</th>
-              <th class="text-gray-500 font-semibold px-6 py-4">Price</th>
-              <th class="text-gray-500 font-semibold px-6 py-4">Stock</th>
-              <th class="text-gray-500 font-semibold px-6 py-4">Status</th>
-              <th class="text-gray-500 font-semibold px-6 py-4 text-right">Actions</th>
+              <th class="text-gray-500 font-semibold px-6 py-4">ສິນຄ້າ</th>
+              <th class="text-gray-500 font-semibold px-6 py-4">ໝວດໝູ່</th>
+              <th class="text-gray-500 font-semibold px-6 py-4">ລາຄາ</th>
+              <th class="text-gray-500 font-semibold px-6 py-4">ຈຳນວນ</th>
+              <th class="text-gray-500 font-semibold px-6 py-4">ສະຖານະ</th>
+              <th class="text-gray-500 font-semibold px-6 py-4 text-right">ການຈັດການ</th>
             </tr>
           </thead>
           <tbody v-if="!isLoading">
@@ -168,7 +168,7 @@ const getStatusClass = (stock: number) => {
               <td class="px-6 py-4">
                 <span class="badge badge-sm"
                   :class="product.stock_qty > 0 ? 'badge-success text-white' : 'badge-error text-white'">
-                  {{ product.stock_qty > 0 ? 'In Stock' : 'Out of Stock' }}
+                  {{ product.stock_qty > 0 ? 'ມີສິນຄ້າ' : 'ສິນຄ້າໝົດ' }}
                 </span>
               </td>
               <td class="px-6 py-4">
@@ -187,7 +187,7 @@ const getStatusClass = (stock: number) => {
             <tr>
               <td colspan="7" class="text-center py-12">
                 <span class="loading loading-spinner loading-lg text-primary"></span>
-                <p class="mt-2 text-gray-400">Loading products...</p>
+                <p class="mt-2 text-gray-400">ກຳລັງໂຫຼດສິນຄ້າ...</p>
               </td>
             </tr>
           </tbody>

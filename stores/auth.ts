@@ -33,7 +33,6 @@ export const useAuthStore = defineStore('auth', () => {
                 const payloadBase64 = accessToken.split('.')[1];
                 const decodedJson = atob(payloadBase64);
                 const payload = JSON.parse(decodedJson);
-                console.log('payload====>', payload);
                 user.value = {
                     id: payload.id?.toString(),
                     name: payload.name,

@@ -42,10 +42,10 @@ const selectedTimeframe = ref('month'); // 'day' | 'month' | 'year'
 
 // Real-time Stats
 const stats = ref([
-    { label: 'Total Revenue', value: 'LKR 0', change: '0%', isPositive: true, icon: TrendingUp },
-    { label: 'Orders count', value: '0', change: '0%', isPositive: true, icon: ShoppingBag },
-    { label: 'Avg. Order', value: 'LKR 0', change: '0%', isPositive: true, icon: BarChart3 },
-    { label: 'Success Rate', value: '0%', change: '0%', isPositive: true, icon: RefreshCcw },
+    { label: 'ລາຍຮັບທັງໝົດ', value: 'LKR 0', change: '0%', isPositive: true, icon: TrendingUp },
+    { label: 'ຈຳນວນການສັ່ງຊື້', value: '0', change: '0%', isPositive: true, icon: ShoppingBag },
+    { label: 'ສະເລ່ຍຕໍ່ບິນ', value: 'LKR 0', change: '0%', isPositive: true, icon: BarChart3 },
+    { label: 'ອັດຕາຄວາມສຳເລັດ', value: '0%', change: '0%', isPositive: true, icon: RefreshCcw },
 ]);
 
 // Top Products Data
@@ -127,7 +127,7 @@ const fetchData = async () => {
         salesTrendData.value = {
             labels: Array.from(timelineMap.keys()),
             datasets: [{
-                label: 'Revenue',
+                label: 'ລາຍຮັບ',
                 backgroundColor: 'rgba(255, 77, 109, 0.1)',
                 borderColor: '#ff4d6d',
                 data: Array.from(timelineMap.values()),
@@ -188,19 +188,19 @@ watch(selectedTimeframe, () => fetchData());
             <div>
                 <h1 class="text-3xl font-black text-gray-900 tracking-tight flex items-center gap-3">
                     <BarChart3 class="w-8 h-8 text-primary" />
-                    Live Sales Analytics
+                    ການວິເຄາະຍອດຂາຍສົດ
                 </h1>
-                <p class="text-gray-500 font-medium">Monitoring bakery performance in real-time.</p>
+                <p class="text-gray-500 font-medium">ຕິດຕາມປະສິດທິຜົນຂອງຮ້ານເບເກີຣີໃນເວລາຈິງ.</p>
             </div>
             <div class="flex gap-2">
                 <button @click="fetchData"
                     class="btn btn-ghost bg-white border border-gray-200 rounded-xl px-4 gap-2 hover:bg-gray-50">
                     <RefreshCcw class="w-4 h-4" :class="{ 'animate-spin': isLoading }" />
-                    Refresh
+                    ໂຫຼດໃໝ່
                 </button>
                 <button class="btn btn-primary rounded-xl px-6 gap-2 shadow-lg shadow-primary/25">
                     <Download class="w-4 h-4" />
-                    Export Data
+                    ສົ່ງອອກຂໍ້ມູນ
                 </button>
             </div>
         </div>
@@ -211,7 +211,7 @@ watch(selectedTimeframe, () => fetchData());
                 class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-all relative group overflow-hidden">
                 <div class="flex flex-col gap-1 relative z-10">
                     <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ stat.label
-                        }}</span>
+                    }}</span>
                     <div class="flex items-baseline gap-2">
                         <h3 class="text-2xl font-black text-gray-900">{{ stat.value }}</h3>
                     </div>
@@ -223,7 +223,7 @@ watch(selectedTimeframe, () => fetchData());
                             <component :is="stat.isPositive ? TrendingUp : TrendingDown" class="w-3 h-3" />
                             {{ stat.change }}
                         </span>
-                        <span class="text-[10px] text-gray-400 font-medium">vs last period</span>
+                        <span class="text-[10px] text-gray-400 font-medium">ທຽບກັບຊ່ວງທີ່ແລ້ວ</span>
                     </div>
                 </div>
                 <div class="absolute -right-2 -bottom-2 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity">
@@ -241,9 +241,9 @@ watch(selectedTimeframe, () => fetchData());
                             <Clock class="w-6 h-6 text-primary" />
                         </div>
                         <div>
-                            <h2 class="text-xl font-black text-gray-900">Revenue Timeline</h2>
-                            <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Detecting sales trends
-                                & declines</p>
+                            <h2 class="text-xl font-black text-gray-900">ໄລຍະລາຍຮັບ</h2>
+                            <p class="text-sm text-gray-600 font-bold uppercase tracking-widest">ກວດຫາແນວໂນ້ມຍອດຂາຍ
+                                ແລະ ການຫຼຸດລົງ</p>
                         </div>
                     </div>
                     <div class="flex bg-gray-100 p-1 rounded-xl">
@@ -269,8 +269,8 @@ watch(selectedTimeframe, () => fetchData());
                         <Layers class="w-6 h-6 text-accent" />
                     </div>
                     <div>
-                        <h2 class="text-xl font-black text-gray-900">Meal Insights</h2>
-                        <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Order distribution</p>
+                        <h2 class="text-xl font-black text-gray-900">ລາຍລະອຽດໝວດໝູ່</h2>
+                        <p class="text-sm text-gray-600 font-bold uppercase tracking-widest">ການແຈກຢາຍການສັ່ງຊື້</p>
                     </div>
                 </div>
                 <div class="flex-1 flex flex-col justify-center">
@@ -280,7 +280,8 @@ watch(selectedTimeframe, () => fetchData());
                         </ClientOnly>
                         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                             <span class="text-3xl font-black text-gray-900">{{ stats[1].value }}</span>
-                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Orders</span>
+                            <span
+                                class="text-sm font-bold text-gray-600 uppercase tracking-widest">ລາຍການສັ່ງຊື້</span>
                         </div>
                     </div>
                 </div>
@@ -295,33 +296,35 @@ watch(selectedTimeframe, () => fetchData());
                         <TrendingUp class="w-6 h-6 text-neutral" />
                     </div>
                     <div>
-                        <h2 class="text-xl font-black text-gray-900">Best-Selling Products</h2>
-                        <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Ranking by generated
-                            revenue</p>
+                        <h2 class="text-xl font-black text-gray-900">ສິນຄ້າຂາຍດີທີ່ສຸດ</h2>
+                        <p class="text-sm text-gray-600 font-bold uppercase tracking-widest">ຈັດອັນດັບຕາມລາຍຮັບ
+                            ທີ່ສ້າງໄດ້</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></span>
-                    <span class="text-xs font-bold text-gray-400">Live Ranking</span>
+                    <span class="text-sm font-bold text-gray-600">ອັນດັບປັດຈຸບັນ</span>
                 </div>
             </div>
             <div class="overflow-x-auto">
                 <table class="table w-full">
                     <thead>
                         <tr class="bg-gray-50/30">
-                            <th class="px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest"># Rank
+                            <th class="px-8 py-4 text-sm font-black text-gray-600 uppercase tracking-widest">#
+                                ອັນດັບ
                             </th>
-                            <th class="px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Product
-                                Information</th>
+                            <th class="px-8 py-4 text-sm font-black text-gray-600 uppercase tracking-widest">
+                                ຂໍ້ມູນສິນຄ້າ
+                            </th>
                             <th
-                                class="px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">
-                                Qty Sold</th>
+                                class="px-8 py-4 text-sm font-black text-gray-600 uppercase tracking-widest text-center">
+                                ຈຳນວນທີ່ຂາຍໄດ້</th>
                             <th
-                                class="px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">
-                                Trend</th>
+                                class="px-8 py-4 text-sm font-black text-gray-600 uppercase tracking-widest text-center">
+                                ແນວໂນ້ມ</th>
                             <th
-                                class="px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">
-                                Total Revenue</th>
+                                class="px-8 py-4 text-sm font-black text-gray-600 uppercase tracking-widest text-right">
+                                ລາຍຮັບທັງໝົດ</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -343,8 +346,9 @@ watch(selectedTimeframe, () => fetchData());
                                     </div>
                                     <div>
                                         <h4 class="font-bold text-gray-900">{{ product.name }}</h4>
-                                        <p class="text-[11px] text-gray-400 font-bold uppercase tracking-wider">Top 1%
-                                            of Products</p>
+                                        <p class="text-[11px] text-gray-400 font-bold uppercase tracking-wider">ອັນດັບ
+                                            1%
+                                            ຂອງສິນຄ້າ</p>
                                     </div>
                                 </div>
                             </td>
@@ -361,8 +365,8 @@ watch(selectedTimeframe, () => fetchData());
                             </td>
                         </tr>
                         <tr v-if="topProducts.length === 0">
-                            <td colspan="5" class="py-12 text-center text-gray-400 font-medium">No sales data available
-                                for ranking.</td>
+                            <td colspan="5" class="py-12 text-center text-gray-400 font-medium">ບໍ່ມີຂໍ້ມູນຍອດຂາຍສຳລັບ
+                                ການຈັດອັນດັບ.</td>
                         </tr>
                     </tbody>
                 </table>

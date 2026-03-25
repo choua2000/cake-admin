@@ -16,7 +16,7 @@ const handleLogin = async () => {
     await authStore.login(email.value, password.value);
     navigateTo('/');
   } catch (error: any) {
-    alert(error.data?.message || 'Login failed. Please check your credentials.');
+    alert(error.data?.message || 'ເຂົ້າສູ່ລະບົບລົ້ມເຫລວ. ກະລຸນາກວດສອບຂໍ້ມູນຂອງທ່ານ.');
   } finally {
     isLoading.value = false;
   }
@@ -35,25 +35,25 @@ const handleLogin = async () => {
         <Cake class="w-10 h-10 text-white" />
       </div>
 
-      <h1 class="text-3xl font-extrabold text-gray-900 mb-2">CakeAdmin</h1>
-      <p class="text-gray-500 mb-10 text-center">Manage your sweetest business with ease.</p>
+      <h1 class="text-3xl font-extrabold text-gray-900 mb-2">ຮ້ານເຄັກ</h1>
+      <p class="text-gray-500 mb-10 text-center">ຈັດການທຸລະກິດຂອງຫວານຂອງທ່ານຢ່າງງ່າຍດາຍ.</p>
 
       <form @submit.prevent="handleLogin" class="w-full space-y-6">
         <div class="space-y-2">
-          <label class="text-sm font-bold text-gray-700 ml-1">Email Address</label>
+          <label class="text-sm font-bold text-gray-700 ml-1">ທີ່ຢູ່ອີເມວ</label>
           <div class="relative">
             <Mail class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <input v-model="email" type="email" placeholder="Email..."
+            <input v-model="email" type="email" placeholder="ອີເມວ..."
               class="input input-bordered w-full pl-12 bg-gray-50 border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl h-12"
               required />
           </div>
         </div>
 
         <div class="space-y-2">
-          <label class="text-sm font-bold text-gray-700 ml-1">Password</label>
+          <label class="text-sm font-bold text-gray-700 ml-1">ລະຫັດຜ່ານ</label>
           <div class="relative">
             <Lock class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <input v-model="password" type="password" placeholder="Password..."
+            <input v-model="password" type="password" placeholder="ລະຫັດຜ່ານ..."
               class="input input-bordered w-full pl-12 bg-gray-50 border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl h-12"
               required />
           </div>
@@ -62,9 +62,9 @@ const handleLogin = async () => {
         <div class="flex items-center justify-between">
           <label class="flex items-center gap-2 cursor-pointer group">
             <input type="checkbox" class="checkbox checkbox-sm checkbox-primary rounded" />
-            <span class="text-sm text-gray-600 group-hover:text-primary transition-colors">Remember me</span>
+            <span class="text-sm text-gray-600 group-hover:text-primary transition-colors">ຈື່ຂ້ອຍໄວ້</span>
           </label>
-          <NuxtLink to="/forgot-password" class="text-sm font-bold text-primary hover:underline">Forgot Password?
+          <NuxtLink to="/forgot-password" class="text-sm font-bold text-primary hover:underline">ລືມລະຫັດຜ່ານ?
           </NuxtLink>
         </div>
 
@@ -72,7 +72,7 @@ const handleLogin = async () => {
           class="btn btn-primary w-full h-12 rounded-xl text-lg font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
           :disabled="isLoading">
           <span v-if="isLoading" class="loading loading-spinner"></span>
-          Sign In
+          ເຂົ້າສູ່ລະບົບ
         </button>
       </form>
 

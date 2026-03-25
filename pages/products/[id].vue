@@ -77,7 +77,7 @@ const fetchProduct = async () => {
         imagePreview.value = getImageUrl(product.image_url);
     } catch (error) {
         console.error('Failed to fetch product:', error);
-        alert('Failed to load product details.');
+        alert('ບໍ່ສາມາດໂຫຼດລາຍລະອຽດສິນຄ້າໄດ້.');
         navigateTo('/products');
     } finally {
         isFetching.value = false;
@@ -117,11 +117,11 @@ const submitProduct = async () => {
         }
 
         await api.put(`/products/${route.params.id}`, formData);
-        showToast('Product updated successfully!', 'success');
+        showToast('ອັບເດດສິນຄ້າສຳເລັດແລ້ວ!', 'success');
         setTimeout(() => navigateTo('/products'), 1500);
     } catch (error) {
         console.error('Failed to update product:', error);
-        showToast('Failed to update product. Please try again.', 'error');
+        showToast('ບໍ່ສາມາດອັບເດດສິນຄ້າໄດ້, ກະລຸນາລອງໃໝ່ອີກຄັ້ງ.', 'error');
     } finally {
         isLoading.value = false;
     }
@@ -135,26 +135,26 @@ const submitProduct = async () => {
                 <ArrowLeft class="w-6 h-6" />
             </NuxtLink>
             <div>
-                <h1 class="text-3xl font-bold text-gray-900">Edit Product</h1>
-                <p class="text-gray-500">Update your sweet masterpiece and its details.</p>
+                <h1 class="text-3xl font-bold text-gray-900">ແກ້ໄຂສິນຄ້າ</h1>
+                <p class="text-gray-500">ອັບເດດຂໍ້ມູນສິນຄ້າຂອງທ່ານ.</p>
             </div>
         </div>
 
         <div v-if="isFetching" class="flex flex-col items-center justify-center py-20">
             <span class="loading loading-spinner loading-lg text-primary"></span>
-            <p class="mt-4 text-gray-500">Loading product details...</p>
+            <p class="mt-4 text-gray-500">ກຳລັງໂຫຼດລາຍລະອຽດສິນຄ້າ...</p>
         </div>
 
         <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Image Upload Area -->
             <div class="lg:col-span-1">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                    <h2 class="text-lg font-bold text-gray-900 mb-4">Product Image</h2>
+                    <h2 class="text-lg font-bold text-gray-900 mb-4">ຮູບພາບສິນຄ້າ</h2>
                     <div class="relative aspect-square rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center overflow-hidden transition-all hover:border-primary group"
                         :class="[imagePreview ? 'border-solid border-primary' : '']">
                         <template v-if="!imagePreview">
                             <Upload class="w-10 h-10 text-gray-300 group-hover:text-primary mb-2 transition-colors" />
-                            <p class="text-sm text-gray-500 font-medium">Click to upload</p>
+                            <p class="text-sm text-gray-500 font-medium">ຄລິກເພື່ອອັບໂຫຼດ</p>
                             <input type="file" @change="handleImageUpload"
                                 class="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" />
                         </template>
@@ -162,7 +162,7 @@ const submitProduct = async () => {
                             <img :src="imagePreview" alt="Preview" class="w-full h-full object-cover" />
                             <div
                                 class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <p class="text-white text-sm font-bold">Change Image</p>
+                                <p class="text-white text-sm font-bold">ປ່ຽນຮູບພາບ</p>
                                 <input type="file" @change="handleImageUpload"
                                     class="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" />
                             </div>
@@ -173,7 +173,7 @@ const submitProduct = async () => {
                         </template>
                     </div>
                     <p class="mt-4 text-xs text-gray-400 leading-relaxed text-center">
-                        Upload a high-quality 1:1 image. Max size 2MB (JPG, PNG).
+                        ອັບໂຫຼດຮູບພາບ 1:1 ຄຸນນະພາບສູງ. ຂະໜາດສູງສຸດ 2MB (JPG, PNG).
                     </p>
                 </div>
             </div>
@@ -183,36 +183,35 @@ const submitProduct = async () => {
                 <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div class="sm:col-span-2 space-y-2">
-                            <label class="text-sm font-bold text-gray-700 ml-1">Product Name</label>
-                            <input v-model="form.name" type="text" placeholder="Ex. Triple Chocolate Layer Cake"
+                            <label class="text-sm font-bold text-gray-700 ml-1">ຊື່ສິນຄ້າ</label>
+                            <input v-model="form.name" type="text" placeholder="ຕົວຢ່າງ: ເຄັກຊັອກໂກແລັດ 3 ຊັ້ນ"
                                 class="input input-bordered w-full bg-gray-50 border-gray-200 focus:border-primary rounded-xl" />
                         </div>
 
                         <div class="space-y-2">
-                            <label class="text-sm font-bold text-gray-700 ml-1">Category</label>
+                            <label class="text-sm font-bold text-gray-700 ml-1">ໝວດໝູ່</label>
                             <select v-model="form.category_id"
                                 class="select select-bordered w-full bg-gray-50 border-gray-200 focus:border-primary rounded-xl">
-                                <option disabled value="">Select category</option>
+                                <option disabled value="">ເລືອກໝວດໝູ່</option>
                                 <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
                             </select>
                         </div>
 
                         <div class="space-y-2">
-                            <label class="text-sm font-bold text-gray-700 ml-1">Price ($)</label>
+                            <label class="text-sm font-bold text-gray-700 ml-1">ລາຄາ (LKR)</label>
                             <input v-model="form.price" type="number" placeholder="0.00"
                                 class="input input-bordered w-full bg-gray-50 border-gray-200 focus:border-primary rounded-xl" />
                         </div>
 
                         <div class="space-y-2">
-                            <label class="text-sm font-bold text-gray-700 ml-1">Stock Level</label>
+                            <label class="text-sm font-bold text-gray-700 ml-1">ຈຳນວນໃນສະຕັອກ</label>
                             <input v-model="form.stock_qty" type="number" placeholder="0"
                                 class="input input-bordered w-full bg-gray-50 border-gray-200 focus:border-primary rounded-xl" />
                         </div>
 
                         <div class="sm:col-span-2 space-y-2">
-                            <label class="text-sm font-bold text-gray-700 ml-1">Description</label>
-                            <textarea v-model="form.description" rows="4"
-                                placeholder="Tell us about this delicious creation..."
+                            <label class="text-sm font-bold text-gray-700 ml-1">ລາຍລະອຽດ</label>
+                            <textarea v-model="form.description" rows="4" placeholder="ອະທິບາຍກ່ຽວກັບສິນຄ້ານີ້..."
                                 class="textarea textarea-bordered w-full bg-gray-50 border-gray-200 focus:border-primary rounded-xl"></textarea>
                         </div>
                     </div>
@@ -222,13 +221,13 @@ const submitProduct = async () => {
                 <div class="flex items-center justify-end gap-4">
                     <NuxtLink to="/products"
                         class="btn btn-ghost border-transparent text-gray-500 hover:bg-gray-100 rounded-xl px-8 h-12 flex items-center">
-                        Cancel</NuxtLink>
+                        ຍົກເລີກ</NuxtLink>
                     <button @click="submitProduct" type="button"
                         class="btn btn-primary rounded-xl px-8 h-12 gap-2 shadow-lg shadow-primary/20"
                         :disabled="isLoading">
                         <span v-if="isLoading" class="loading loading-spinner"></span>
                         <Save class="w-5 h-5" />
-                        Update Product
+                        ອັບເດດສິນຄ້າ
                     </button>
                 </div>
             </div>
