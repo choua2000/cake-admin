@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import {
+    PlusCircle,
+    Search,
+    X,
+    Tags,
+    Pencil,
+    Trash2
+} from 'lucide-vue-next';
 definePageMeta({
     layout: 'admin',
     middleware: 'auth'
@@ -124,105 +132,138 @@ onMounted(() => {
             </div>
         </div>
 
-        <!-- Table -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="table w-full">
-                    <thead>
-                        <tr class="border-b border-gray-100 bg-gray-300">
-                            <th class="text-gray-600 font-semibold px-6 py-4">ຊື່ໝວດໝູ່</th>
-                            <th class="text-gray-600 font-semibold px-6 py-4">ລາຍລະອຽດ</th>
-                            <th class="text-gray-600 font-semibold px-6 py-4 text-right">ການຈັດການ</th>
-                        </tr>
-                    </thead>
-                    <tbody v-if="isLoading">
-                        <tr>
-                            <td colspan="3" class="text-center py-16">
-                                <span class="loading loading-spinner text-primary loading-lg"></span>
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tbody v-else-if="filteredCategories.length === 0">
-                        <tr>
-                            <td colspan="3" class="text-center py-16 text-gray-400">
-                                <Tags class="w-12 h-12 text-gray-200 mx-auto mb-3" />
-                                <p class="font-medium text-gray-400">ບໍ່ພົບໝວດໝູ່ເລີຍ.</p>
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tbody v-else>
-                        <tr v-for="category in filteredCategories" :key="category.id"
-                            class="hover:bg-gray-50 transition-colors">
-                            <td class="px-6 py-4 font-bold text-gray-900">{{ category.name }}</td>
-                            <td class="px-6 py-4 text-gray-500 max-w-md truncate">{{ category.description }}</td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="flex items-center justify-end gap-2">
-                                    <button @click="openModal(category)"
-                                        class="btn btn-ghost btn-sm btn-square text-blue-500 hover:bg-blue-50">
-                                        <Pencil class="w-4 h-4" />
-                                    </button>
-                                    <button @click="deleteCategory(category.id)"
-                                        class="btn btn-ghost btn-sm btn-square text-red-500 hover:bg-red-50">
-                                        <Trash2 class="w-4 h-4" />
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+        <!-- Categories Content -->
+        <div class="space-y-4">
+            <!-- Loading State -->
+            <div v-if="isLoading" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+                <span class="loading loading-spinner loading-lg text-primary"></span>
+                <p class="mt-4 text-gray-500 font-medium">ກຳລັງໂຫຼດຂໍ້ມູນໝວດໝູ່...</p>
             </div>
-            <div class="px-6 py-4 border-t border-gray-100 text-sm text-gray-400">
-                ທັງໝົດ: {{ filteredCategories.length }} ໝວດໝູ່
+
+            <!-- Empty State -->
+            <div v-else-if="filteredCategories.length === 0"
+                class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+                <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Tags class="w-8 h-8 text-gray-300" />
+                </div>
+                <h3 class="text-lg font-bold text-gray-900">ບໍ່ພົບຂໍ້ມູນ</h3>
+                <p class="text-gray-500">{{ searchQuery ? `ບໍ່ພົບຂໍ້ມູນທີ່ຄົ້ນຫາ "${searchQuery}"` :
+                    'ຍັງບໍ່ມີໝວດໝູ່ໃນລະບົບເທື່ອ' }}</p>
+            </div>
+
+            <!-- Desktop Table -->
+            <div v-else class="hidden md:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="overflow-x-auto text-left">
+                    <table class="table w-full">
+                        <thead>
+                            <tr class="bg-gray-50/50">
+                                <th class="text-gray-500 font-bold text-xs uppercase tracking-wider px-6 py-4">ຊື່ໝວດໝູ່
+                                </th>
+                                <th class="text-gray-500 font-bold text-xs uppercase tracking-wider px-6 py-4">ລາຍລະອຽດ
+                                </th>
+                                <th
+                                    class="text-gray-500 font-bold text-xs uppercase tracking-wider px-6 py-4 text-right">
+                                    ຈັດການ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="category in filteredCategories" :key="category.id"
+                                class="hover:bg-gray-50/30 transition-colors">
+                                <td class="px-6 py-4 font-bold text-gray-900 text-sm italic">{{ category.name }}</td>
+                                <td class="px-6 py-4 text-gray-500 text-sm line-clamp-1 max-w-md">{{
+                                    category.description || '-' }}</td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex items-center justify-end gap-1">
+                                        <button @click="openModal(category)"
+                                            class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors">
+                                            <Pencil class="w-4 h-4" />
+                                        </button>
+                                        <button @click="deleteCategory(category.id)"
+                                            class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                                            <Trash2 class="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Mobile Cards -->
+            <div v-if="!isLoading && filteredCategories.length > 0" class="md:hidden space-y-3">
+                <div v-for="category in filteredCategories" :key="category.id"
+                    class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 active:bg-gray-50 transition-colors">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-gray-900">{{ category.name }}</h3>
+                        <div class="flex gap-1">
+                            <button @click="openModal(category)"
+                                class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors">
+                                <Pencil class="w-4 h-4" />
+                            </button>
+                            <button @click="deleteCategory(category.id)"
+                                class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                                <Trash2 class="w-4 h-4" />
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 leading-relaxed">{{ category.description || 'ບໍ່ມີລາຍລະອຽດ' }}</p>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div
+                class="bg-white px-4 md:px-6 py-4 rounded-2xl shadow-sm border border-gray-100 text-center sm:text-left">
+                <p class="text-sm font-medium text-gray-400">ທັງໝົດ: <span class="text-gray-900 font-bold">{{
+                    filteredCategories.length }}</span> ໝວດໝູ່</p>
             </div>
         </div>
 
         <!-- Create/Edit Modal -->
-        <dialog id="category_modal" class="modal">
-            <div class="modal-box rounded-2xl p-0 overflow-hidden max-w-md shadow-2xl">
-                <form method="dialog">
-                    <button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4 focus:outline-none">
-                        <X class="w-4 h-4" />
+        <dialog id="category_modal" class="modal modal-bottom sm:modal-middle">
+            <div class="modal-box rounded-t-3xl sm:rounded-2xl p-0 overflow-hidden max-w-md shadow-2xl bg-white">
+                <div class="p-6 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-xl text-gray-900">{{ isEditMode ? 'ແກ້ໄຂໝວດໝູ່' : 'ເພີ່ມໝວດໝູ່ໃໝ່' }}
+                        </h3>
+                        <p class="text-xs text-gray-500 mt-1">ຈັດການຂໍ້ມູນໝວດໝູ່ສິນຄ້າຂອງທ່ານ.</p>
+                    </div>
+                    <button @click="closeModal" class="p-2 hover:bg-gray-200 rounded-full transition-colors">
+                        <X class="w-5 h-5 text-gray-500" />
                     </button>
-                </form>
-
-                <div class="p-6 border-b border-gray-100 bg-gray-50">
-                    <h3 class="font-bold text-xl text-gray-900">{{ isEditMode ? 'ແກ້ໄຂໝວດໝູ່' : 'ເພີ່ມໝວດໝູ່ໃໝ່' }}
-                    </h3>
-                    <p class="text-sm text-gray-500 mt-1">
-                        <span v-if="isEditMode">ອັບເດດລາຍລະອຽດຂອງໝວດໝູ່ນີ້.</span>
-                        <span v-else>ເພີ່ມໝວດໝູ່ໃໝ່ສຳລັບສິນຄ້າຂອງທ່ານ.</span>
-                    </p>
                 </div>
 
                 <div class="p-6">
-                    <form @submit.prevent="saveCategory" class="space-y-4">
-                        <div class="space-y-2">
-                            <label class="text-sm font-semibold text-gray-700 ml-1">ຊື່ໝວດໝູ່ <span
-                                    class="text-red-500">*</span></label>
+                    <form @submit.prevent="saveCategory" class="space-y-5">
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">ຊື່ໝວດໝູ່
+                                <span class="text-red-500">*</span></label>
                             <input v-model="formCategory.name" type="text"
-                                class="input input-bordered w-full rounded-xl focus:border-primary" required
-                                placeholder="ເຊັ່ນ: ເຄັກວັນເກີດ" />
+                                class="input input-bordered w-full rounded-xl focus:border-primary bg-gray-50 h-12"
+                                required placeholder="ເຊັ່ນ: ເຄັກວັນເກີດ" />
                         </div>
-                        <div class="space-y-2">
-                            <label class="text-sm font-semibold text-gray-700 ml-1">ລາຍລະອຽດ</label>
+                        <div class="space-y-1.5">
+                            <label
+                                class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">ລາຍລະອຽດ</label>
                             <textarea v-model="formCategory.description"
-                                class="textarea textarea-bordered w-full rounded-xl focus:border-primary h-24"
-                                placeholder="ລາຍລະອຽດໂດຍຫຍໍ້ຂອງໝວດໝູ່ (ທາງເລືອກ)..."></textarea>
+                                class="textarea textarea-bordered w-full rounded-xl focus:border-primary h-28 bg-gray-50"
+                                placeholder="ລາຍລະອຽດໝວດໝູ່..."></textarea>
                         </div>
 
-                        <div class="mt-8 flex gap-3 pt-4 border-t border-gray-100">
-                            <button type="button" class="btn btn-ghost flex-1 rounded-xl"
+                        <div class="flex flex-col-reverse sm:flex-row gap-3 pt-4 border-t border-gray-50">
+                            <button type="button" class="btn btn-ghost flex-1 rounded-xl h-12 font-bold"
                                 @click="closeModal">ຍົກເລີກ</button>
-                            <button type="submit" class="btn btn-primary flex-1 rounded-xl shadow-lg shadow-primary/20"
+                            <button type="submit"
+                                class="btn btn-primary flex-1 rounded-xl shadow-lg shadow-primary/20 h-12 font-bold"
                                 :disabled="isSubmitting || !formCategory.name">
                                 <span v-if="isSubmitting" class="loading loading-spinner loading-sm"></span>
-                                {{ isEditMode ? 'ບັນທຶກການປ່ຽນແປງ' : 'ສ້າງໝວດໝູ່' }}
+                                {{ isEditMode ? 'ບັນທຶກ' : 'ສ້າງຄໍາມວນ' }}
                             </button>
                         </div>
                     </form>
                 </div>
             </div>
-            <form method="dialog" class="modal-backdrop">
+            <form method="dialog" class="modal-backdrop bg-black/50 backdrop-blur-sm">
                 <button>close</button>
             </form>
         </dialog>

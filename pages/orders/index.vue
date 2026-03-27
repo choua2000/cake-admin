@@ -221,78 +221,123 @@ const exportCSV = () => {
       </div>
     </div>
 
-    <!-- Orders Table -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-      <div class="overflow-x-auto">
-        <table class="table w-full">
-          <thead>
-            <tr class="bg-gray-50/50 bg-gray-300">
-              <!-- <th class="text-gray-500 font-semibold px-6 py-4">Order ID</th> -->
-              <th class="text-gray-500 font-semibold px-6 py-4">ລູກຄ້າ</th>
-              <th class="text-gray-500 font-semibold px-6 py-4">ຈຳນວນຊິ້ນ</th>
-              <th class="text-gray-500 font-semibold px-6 py-4">ອີເມວ</th>
-              <th class="text-gray-500 font-semibold px-6 py-4">ເບີໂທ</th>
-              <th class="text-gray-500 font-semibold px-6 py-4 text-center">ວັນທີ</th>
-              <th class="text-gray-500 font-semibold px-6 py-4 text-center">ສະຖານະ</th>
-              <th class="text-gray-500 font-semibold px-6 py-4 text-center">ການຈ່າຍເງິນ</th>
-              <th class="text-gray-500 font-semibold px-6 py-4 text-right">ຈຳນວນເງິນ</th>
-              <th class="text-gray-500 font-semibold px-6 py-4 text-right">ການຈັດການ</th>
-            </tr>
-          </thead>
-          <tbody v-if="!isLoading">
-            <tr v-for="order in filteredOrders" :key="order.id" class="hover:bg-gray-50/5 transition-colors group">
-              <!-- <td class="px-6 py-4 font-bold text-gray-900">#{{ order.id }}</td> -->
-              <td class="px-6 py-4">
-                <div class="flex flex-col">
-                  <span class="font-medium text-gray-900">{{ order.user?.name }}</span>
-                </div>
-              </td>
-              <td class="px-6 py-4 text-center text-gray-500 text-sm italic">{{ order.items?.length }}</td>
-              <td class="px-6 py-4 text-center text-gray-500 text-sm italic">{{ order.user?.email }}</td>
-              <td class="px-6 py-4 text-center text-gray-500 text-sm italic">{{ order.user?.phone }}</td>
-              <td class="px-6 py-4 text-center text-gray-500 text-sm italic">{{ formatDate(order.order_date) }}</td>
-              <td class="px-6 py-4 text-center">
-                <span class="badge badge-sm font-bold capitalize" :class="getStatusBadge(order.status)">
-                  {{ order.status }}
-                </span>
-              </td>
-              <td class="px-6 py-4 text-center">
-                <span class="text-xs font-bold uppercase" :class="getPaymentBadge(order.payment_method)">
-                  {{ order.payment_method || 'N/A' }}
-                </span>
-              </td>
-              <td class="px-6 py-4 text-right font-bold text-gray-900">LKR {{ parseFloat(order.total_amount ||
-                0).toLocaleString() }}</td>
-              <td class="px-6 py-4 text-right">
-                <button @click="viewOrderDetails(order)"
-                  class="btn btn-ghost btn-sm text-primary hover:bg-primary/10 rounded-lg">
-                  <Eye class="w-4 h-4 mr-1" />
-                  ລາຍລະອຽດ
-                </button>
-              </td>
-            </tr>
-          </tbody>
-          <tbody v-else>
-            <tr>
-              <td colspan="7" class="text-center py-12">
-                <span class="loading loading-spinner loading-lg text-primary"></span>
-                <p class="mt-2 text-gray-400">ກຳລັງໂຫຼດລາຍການສັ່ງຊື້...</p>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <!-- Orders Content -->
+    <div class="space-y-4">
+      <!-- Desktop Table -->
+      <div class="hidden md:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto text-left">
+          <table class="table w-full">
+            <thead>
+              <tr class="bg-gray-50/50">
+                <th class="text-gray-500 font-bold text-xs uppercase tracking-wider px-6 py-4">ລູກຄ້າ</th>
+                <th class="text-gray-500 font-bold text-xs uppercase tracking-wider px-6 py-4 text-center">ຈຳນວນ</th>
+                <th class="text-gray-500 font-bold text-xs uppercase tracking-wider px-6 py-4 text-center">ວັນທີ</th>
+                <th class="text-gray-500 font-bold text-xs uppercase tracking-wider px-6 py-4 text-center">ສະຖານະ</th>
+                <th class="text-gray-500 font-bold text-xs uppercase tracking-wider px-6 py-4 text-center">ການຈ່າຍເງິນ
+                </th>
+                <th class="text-gray-500 font-bold text-xs uppercase tracking-wider px-6 py-4 text-right">ທັງໝົດ</th>
+                <th class="text-gray-500 font-bold text-xs uppercase tracking-wider px-6 py-4 text-right">ຈັດການ</th>
+              </tr>
+            </thead>
+            <tbody v-if="!isLoading">
+              <tr v-for="order in filteredOrders" :key="order.id" class="hover:bg-gray-50/30 transition-colors group">
+                <td class="px-6 py-4">
+                  <div class="flex flex-col">
+                    <span class="font-bold text-gray-900 leading-none mb-1">{{ order.user?.name || 'ແຂກ' }}</span>
+                    <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">#{{ order.id }}</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-center text-gray-600 font-medium text-sm">{{ order.items?.length || 0 }} ຊິ້ນ
+                </td>
+                <td class="px-6 py-4 text-center text-gray-500 text-xs">{{ formatDate(order.order_date) }}</td>
+                <td class="px-6 py-4 text-center">
+                  <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                    :class="getStatusBadge(order.status)">
+                    {{ order.status }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <span class="text-[10px] font-bold uppercase tracking-widest"
+                    :class="getPaymentBadge(order.payment_method)">
+                    {{ order.payment_method || 'N/A' }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-right font-bold text-gray-900 text-sm">
+                  LKR {{ parseFloat(order.total_amount || 0).toLocaleString() }}
+                </td>
+                <td class="px-6 py-4 text-right">
+                  <button @click="viewOrderDetails(order)"
+                    class="p-2 text-primary hover:bg-primary/5 rounded-lg transition-colors">
+                    <Eye class="w-5 h-5" />
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+            <tbody v-else>
+              <tr>
+                <td colspan="7" class="text-center py-16">
+                  <span class="loading loading-spinner loading-lg text-primary"></span>
+                  <p class="mt-4 text-gray-400 font-medium">ກຳລັງໂຫຼດລາຍການສັ່ງຊື້...</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Mobile Cards -->
+      <div v-if="!isLoading" class="md:hidden space-y-3">
+        <div v-for="order in filteredOrders" :key="order.id" @click="viewOrderDetails(order)"
+          class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 active:bg-gray-50 transition-colors">
+          <div class="flex justify-between items-start mb-3">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-bold text-gray-900">{{ order.user?.name}}</span>
+                <span class="text-[10px] text-gray-400 font-bold">#{{ order.id }}</span>
+              </div>
+              <p class="text-xs text-gray-500">{{ formatDate(order.order_date) }}</p>
+            </div>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
+              :class="getStatusBadge(order.status)">
+              {{ order.status }}
+            </span>
+          </div>
+
+          <div class="flex justify-between items-end pt-3 border-t border-gray-50">
+            <div class="flex gap-4">
+              <div>
+                <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest mb-0.5">ສິນຄ້າ</p>
+                <p class="text-xs font-bold text-gray-700">{{ order.items?.length || 0 }} ລາຍການ</p>
+              </div>
+              <div>
+                <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest mb-0.5">ການຊຳລະ</p>
+                <p class="text-xs font-bold uppercase tracking-widest" :class="getPaymentBadge(order.payment_method)">{{
+                  order.payment_method || 'N/A' }}</p>
+              </div>
+            </div>
+            <p class="font-bold text-primary text-lg">₭{{ parseFloat(order.total_amount || 0).toLocaleString() }}</p>
+          </div>
+        </div>
+
+        <div v-if="filteredOrders.length === 0" class="bg-white p-12 rounded-2xl border border-gray-100 text-center">
+          <Search class="w-12 h-12 text-gray-200 mx-auto mb-4" />
+          <p class="text-gray-500 font-medium">ບໍ່ພົບລາຍການສັ່ງຊື້</p>
+        </div>
       </div>
 
       <!-- Pagination -->
-      <div class="p-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p class="text-sm text-gray-500">ກຳລັງສະແດງ {{ orders.length }} ລາຍການສັ່ງຊື້</p>
-        <div class="flex gap-2">
-          <button class="btn btn-ghost btn-sm rounded-lg border border-gray-200">
-            <ChevronLeft class="w-4 h-4" />
+      <div
+        class="bg-white px-4 md:px-6 py-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-sm text-gray-500 order-2 sm:order-1">
+          ສະແດງ {{ filteredOrders.length }} ລາຍການ
+        </p>
+        <div class="flex gap-2 order-1 sm:order-2">
+          <button class="p-2 rounded-lg border border-gray-100 opacity-30 pointer-events-none">
+            <ChevronLeft class="w-5 h-5" />
           </button>
-          <button class="btn btn-primary btn-sm rounded-lg px-4 font-bold">1</button>
-          <button class="btn btn-ghost btn-sm rounded-lg border border-gray-200">
-            <ChevronRight class="w-4 h-4" />
+          <div class="flex items-center px-4 font-bold text-gray-900 border border-gray-100 rounded-lg text-sm">1</div>
+          <button class="p-2 rounded-lg border border-gray-100 opacity-30 pointer-events-none">
+            <ChevronRight class="w-5 h-5" />
           </button>
         </div>
       </div>
@@ -313,18 +358,18 @@ const exportCSV = () => {
           </button>
         </div>
 
-        <div class="p-8 space-y-8 max-h-[80vh] overflow-y-auto">
+        <div class="p-4 md:p-8 space-y-6 md:space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
           <!-- Customer Info -->
-          <div class="grid grid-cols-2 gap-8">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
             <div class="text-left">
-              <p class="text-sm font-bold text-gray-600 uppercase tracking-widest mb-2">ລາຍລະອຽດລູກຄ້າ</p>
+              <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">ລາຍລະອຽດລູກຄ້າ</p>
               <p class="font-bold text-gray-900 text-lg">{{ selectedOrder?.user?.name }}</p>
               <p class="text-sm text-gray-500 italic">{{ selectedOrder?.user?.email }}</p>
               <p class="text-xs text-gray-400 mt-1">{{ selectedOrder?.user?.phone }}</p>
             </div>
-            <div class="text-right">
-              <p class="text-sm font-bold text-gray-600 uppercase tracking-widest mb-2">ການຈ່າຍເງິນ</p>
-              <span class="inline-block font-bold text-sm uppercase"
+            <div class="text-left sm:text-right">
+              <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">ການຈ່າຍເງິນ</p>
+              <span class="inline-block font-bold text-xs uppercase"
                 :class="getPaymentBadge(selectedOrder?.payment_method)">
                 {{ selectedOrder?.payment_method || 'N/A' }}
               </span>
@@ -332,26 +377,28 @@ const exportCSV = () => {
           </div>
 
           <!-- Order Summary -->
-          <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-            <p class="text-sm font-bold text-gray-600 uppercase tracking-widest mb-4 text-left">ລາຍການສິນຄ້າ</p>
+          <div class="bg-gray-50/50 rounded-2xl p-4 md:p-6 border border-gray-100">
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 text-left">ລາຍການສິນຄ້າ</p>
             <div class="space-y-4">
               <div v-for="item in (selectedOrder?.items || [])" :key="item.id"
-                class="flex justify-between items-center">
+                class="flex justify-between items-center gap-4">
                 <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-lg bg-white border border-gray-100 flex items-center justify-center">
+                  <div
+                    class="w-10 h-10 rounded-lg bg-white border border-gray-100 flex items-center justify-center flex-shrink-0 shadow-sm">
                     <Cake class="w-5 h-5 text-primary" />
                   </div>
-                  <div class="text-left">
-                    <p class="font-bold text-gray-900">{{ item.product?.name }}</p>
-                    <p class="text-xs text-gray-400">Qty: {{ item.quantity }} x LKR {{
+                  <div class="text-left min-w-0">
+                    <p class="font-bold text-gray-900 truncate text-sm md:text-base">{{ item.product?.name }}</p>
+                    <p class="text-[10px] md:text-xs text-gray-400">Qty: {{ item.quantity }} x ₭{{
                       parseFloat(item.price).toLocaleString() }}</p>
                   </div>
                 </div>
-                <p class="font-bold text-gray-900">LKR {{ parseFloat(item.subtotal).toLocaleString() }}</p>
+                <p class="font-bold text-gray-900 text-sm whitespace-nowrap">₭{{
+                  parseFloat(item.subtotal).toLocaleString() }}</p>
               </div>
               <div class="pt-4 mt-4 border-t border-gray-200 flex justify-between items-center">
-                <p class="font-bold text-gray-900 text-lg">ລວມທັງໝົດ</p>
-                <p class="font-bold text-primary text-2xl">LKR {{ parseFloat(selectedOrder?.total_amount ||
+                <p class="font-bold text-gray-900">ລວມທັງໝົດ</p>
+                <p class="font-bold text-primary text-xl md:text-2xl">₭{{ parseFloat(selectedOrder?.total_amount ||
                   0).toLocaleString() }}</p>
               </div>
             </div>
@@ -359,11 +406,12 @@ const exportCSV = () => {
 
           <!-- Status Update -->
           <div>
-            <p class="text-sm font-bold text-gray-600 uppercase tracking-widest mb-4 text-left">ອັບເດດສະຖານະ</p>
-            <div class="flex flex-wrap gap-2 justify-start">
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 text-left">ອັບເດດສະຖານະ</p>
+            <div class="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
               <button v-for="status in ['pending', 'processing', 'completed', 'cancelled']" :key="status"
                 @click="updateStatus(selectedOrder?.id, status)"
-                class="btn btn-sm rounded-xl px-4 h-10 border-transparent transition-all capitalize" :class="[
+                class="btn btn-sm rounded-xl px-2 h-10 border-transparent transition-all capitalize text-[10px] font-bold tracking-wider"
+                :class="[
                   selectedOrder?.status?.toLowerCase() === status ? getStatusBadge(status) : 'btn-ghost bg-gray-100 text-gray-500 hover:bg-gray-200'
                 ]" :disabled="isUpdatingStatus">
                 {{ status }}

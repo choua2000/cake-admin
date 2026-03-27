@@ -432,7 +432,9 @@ const getStatusClass = (status: string) => {
         <h2 class="text-lg font-bold text-gray-900">ລາຍການສັ່ງຊື້ຫຼ້າສຸດ</h2>
         <NuxtLink to="/orders" class="text-primary text-sm font-semibold hover:underline">ເບິ່ງທັງໝົດ</NuxtLink>
       </div>
-      <div class="overflow-x-auto">
+
+      <!-- Desktop Table -->
+      <div class="hidden md:block overflow-x-auto">
         <table class="table w-full">
           <thead>
             <tr class="bg-gray-50/50">
@@ -455,6 +457,26 @@ const getStatusClass = (status: string) => {
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <!-- Mobile Cards -->
+      <div class="md:hidden divide-y divide-gray-50">
+        <div v-for="order in recentOrders" :key="order.id" class="p-4 active:bg-gray-50 transition-colors">
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <p class="font-bold text-gray-900 mb-0.5">{{ order.id }}</p>
+              <p class="text-sm text-gray-600 font-medium">{{ order.customer }}</p>
+            </div>
+            <span class="badge badge-sm" :class="getStatusClass(order.status)">{{ order.status }}</span>
+          </div>
+          <div class="flex justify-between items-end">
+            <p class="text-xs text-gray-400 font-medium">{{ order.product }}</p>
+            <p class="font-bold text-primary">{{ order.amount }}</p>
+          </div>
+        </div>
+        <div v-if="recentOrders.length === 0" class="p-8 text-center text-gray-400 text-sm">
+          ບໍ່ມີລາຍການສັ່ງຊື້ໃນເວລານີ້.
+        </div>
       </div>
     </div>
   </div>

@@ -211,7 +211,7 @@ watch(selectedTimeframe, () => fetchData());
                 class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-all relative group overflow-hidden">
                 <div class="flex flex-col gap-1 relative z-10">
                     <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ stat.label
-                    }}</span>
+                        }}</span>
                     <div class="flex items-baseline gap-2">
                         <h3 class="text-2xl font-black text-gray-900">{{ stat.value }}</h3>
                     </div>
@@ -280,8 +280,7 @@ watch(selectedTimeframe, () => fetchData());
                         </ClientOnly>
                         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                             <span class="text-3xl font-black text-gray-900">{{ stats[1].value }}</span>
-                            <span
-                                class="text-sm font-bold text-gray-600 uppercase tracking-widest">ລາຍການສັ່ງຊື້</span>
+                            <span class="text-sm font-bold text-gray-600 uppercase tracking-widest">ລາຍການສັ່ງຊື້</span>
                         </div>
                     </div>
                 </div>
@@ -290,86 +289,108 @@ watch(selectedTimeframe, () => fetchData());
 
         <!-- Best Selling Products -->
         <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
-            <div class="p-8 border-b border-gray-100 flex items-center justify-between">
+            <div
+                class="p-6 md:p-8 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-neutral/10 rounded-2xl flex items-center justify-center">
-                        <TrendingUp class="w-6 h-6 text-neutral" />
+                    <div class="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center shadow-inner">
+                        <TrendingUp class="w-6 h-6 text-gray-400" />
                     </div>
                     <div>
-                        <h2 class="text-xl font-black text-gray-900">ສິນຄ້າຂາຍດີທີ່ສຸດ</h2>
-                        <p class="text-sm text-gray-600 font-bold uppercase tracking-widest">ຈັດອັນດັບຕາມລາຍຮັບ
-                            ທີ່ສ້າງໄດ້</p>
+                        <h2 class="text-xl font-black text-gray-900 leading-none mb-1">ສິນຄ້າຂາຍດີທີ່ສຸດ</h2>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">ຈັດອັນດັບຕາມລາຍຮັບ</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></span>
-                    <span class="text-sm font-bold text-gray-600">ອັນດັບປັດຈຸບັນ</span>
+                <div class="flex items-center gap-2 bg-green-50 px-3 py-1.5 rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    <span class="text-[10px] font-black text-green-700 uppercase tracking-wider">ອັນດັບປັດຈຸບັນ</span>
                 </div>
             </div>
-            <div class="overflow-x-auto">
+
+            <!-- Desktop Table -->
+            <div class="hidden md:block overflow-x-auto text-left">
                 <table class="table w-full">
                     <thead>
                         <tr class="bg-gray-50/30">
-                            <th class="px-8 py-4 text-sm font-black text-gray-600 uppercase tracking-widest">#
-                                ອັນດັບ
-                            </th>
-                            <th class="px-8 py-4 text-sm font-black text-gray-600 uppercase tracking-widest">
-                                ຂໍ້ມູນສິນຄ້າ
-                            </th>
+                            <th class="px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">#
+                                ອັນດັບ</th>
+                            <th class="px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                ຂໍ້ມູນສິນຄ້າ</th>
                             <th
-                                class="px-8 py-4 text-sm font-black text-gray-600 uppercase tracking-widest text-center">
-                                ຈຳນວນທີ່ຂາຍໄດ້</th>
+                                class="px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">
+                                ຂາຍໄດ້</th>
                             <th
-                                class="px-8 py-4 text-sm font-black text-gray-600 uppercase tracking-widest text-center">
+                                class="px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">
                                 ແນວໂນ້ມ</th>
                             <th
-                                class="px-8 py-4 text-sm font-black text-gray-600 uppercase tracking-widest text-right">
-                                ລາຍຮັບທັງໝົດ</th>
+                                class="px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">
+                                ລາຍຮັບ</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="(product, idx) in topProducts" :key="product.name"
-                            class="hover:bg-gray-50/50 transition-all group">
-                            <td class="px-8 py-6">
-                                <span :class="[
-                                    'w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs',
-                                    idx === 0 ? 'bg-primary text-white' : 'bg-gray-100 text-gray-400'
-                                ]">
-                                    {{ idx + 1 }}
-                                </span>
+                            class="hover:bg-gray-50/50 transition-all">
+                            <td class="px-8 py-6 italic font-bold text-gray-900">
+                                0{{ idx + 1 }}
                             </td>
                             <td class="px-8 py-6">
                                 <div class="flex items-center gap-4">
                                     <div
-                                        class="w-12 h-12 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center">
-                                        <ShoppingBag class="w-6 h-6 text-gray-300" />
+                                        class="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center shadow-sm">
+                                        <ShoppingBag class="w-5 h-5 text-gray-300" />
                                     </div>
                                     <div>
-                                        <h4 class="font-bold text-gray-900">{{ product.name }}</h4>
-                                        <p class="text-[11px] text-gray-400 font-bold uppercase tracking-wider">ອັນດັບ
-                                            1%
-                                            ຂອງສິນຄ້າ</p>
+                                        <h4 class="font-bold text-gray-900 text-sm md:text-base">{{ product.name }}</h4>
+                                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Top 1%
+                                            of Store</p>
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-8 py-6 text-center font-black text-gray-700">{{ product.qty }}</td>
+                            <td class="px-8 py-6 text-center font-bold text-gray-700 text-sm">{{ product.qty }}</td>
                             <td class="px-8 py-6 text-center">
                                 <div
-                                    class="inline-flex items-center gap-1 text-green-500 font-bold px-3 py-1 bg-green-50 rounded-full text-xs">
-                                    <ArrowUpRight class="w-3 h-3" />
+                                    class="inline-flex items-center gap-1 text-green-600 font-bold px-2 py-0.5 bg-green-50 rounded-full text-[10px]">
                                     +{{ 12 - idx }}%
                                 </div>
                             </td>
-                            <td class="px-8 py-6 text-right font-black text-gray-900 text-lg">
-                                LKR {{ product.revenue.toLocaleString() }}
+                            <td class="px-8 py-6 text-right font-black text-gray-900">
+                                ₭{{ product.revenue.toLocaleString() }}
                             </td>
-                        </tr>
-                        <tr v-if="topProducts.length === 0">
-                            <td colspan="5" class="py-12 text-center text-gray-400 font-medium">ບໍ່ມີຂໍ້ມູນຍອດຂາຍສຳລັບ
-                                ການຈັດອັນດັບ.</td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Mobile Cards -->
+            <div class="md:hidden divide-y divide-gray-50">
+                <div v-for="(product, idx) in topProducts" :key="product.name"
+                    class="p-4 flex gap-4 active:bg-gray-50 transition-colors">
+                    <div class="flex-shrink-0 flex flex-col items-center">
+                        <span class="text-lg font-black text-gray-200">0{{ idx + 1 }}</span>
+                        <div class="mt-2 w-1.5 h-full rounded-full bg-gray-100">
+                            <div class="w-full bg-primary rounded-full transition-all duration-1000"
+                                :style="{ height: (100 - (idx * 15)) + '%' }"></div>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-bold text-gray-900 leading-tight">{{ product.name }}</h4>
+                            <div class="flex flex-col items-end">
+                                <p class="font-black text-primary text-sm">₭{{ product.revenue.toLocaleString() }}</p>
+                                <div class="flex items-center gap-0.5 text-[9px] font-bold text-green-500">
+                                    <ArrowUpRight class="w-2.5 h-2.5" />
+                                    +{{ 12 - idx }}%
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-baseline gap-1 mt-auto">
+                            <span class="text-xs font-bold text-gray-700">{{ product.qty }}</span>
+                            <span class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">ຂາຍອອກແລ້ວ</span>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="topProducts.length === 0" class="p-12 text-center text-gray-400 font-medium text-sm">
+                    ບໍ່ມີຂໍ້ມູນຍອດຂາຍໃນປັດຈຸບັນ.
+                </div>
             </div>
         </div>
     </div>

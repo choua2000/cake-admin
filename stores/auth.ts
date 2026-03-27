@@ -20,15 +20,11 @@ export const useAuthStore = defineStore('auth', () => {
                 method: 'POST',
                 body: { email, password }
             });
-            console.log('response====>', response);
-
-            // Extract token from backend response
             const accessToken = response.token?.accessToken;
             if (!accessToken) throw new Error('Failed to login: No access token received.');
 
             token.value = accessToken;
 
-            // Decode JWT to get user info since backend only sends token now
             try {
                 const payloadBase64 = accessToken.split('.')[1];
                 const decodedJson = atob(payloadBase64);

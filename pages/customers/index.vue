@@ -54,11 +54,14 @@ const getLastLogin = (dateStr: string) => {
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 };
 
-const isActive = (customer: any) => {
-  if (!customer.updatedAt) return false;
-  const lastActive = new Date(customer.updatedAt).getTime();
-  const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
-  return lastActive > thirtyDaysAgo;
+const toggleStatus = async (customer: any) => {
+  try {
+    const newStatus = !customer.isActive;
+    await api.put(`/users/update-status/${customer.id}`, { isActive: newStatus });
+    customer.isActive = newStatus;
+  } catch (error) {
+    console.error('Failed to update status:', error);
+  }
 };
 
 // Pagination
@@ -103,104 +106,141 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- Table -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-      <div class="overflow-x-auto">
-        <table class="table w-full">
-          <thead>
-            <tr class="border-b border-gray-400 bg-gray-200">
-              <th class="text-gray-600 font-semibold text-sm uppercase tracking-wider px-6 py-4">ຊື່</th>
-              <th class="text-gray-600 font-semibold text-sm uppercase tracking-wider px-6 py-4">ອີເມວ</th>
-              <th class="text-gray-600 font-semibold text-sm uppercase tracking-wider px-6 py-4 text-center">ເບີໂທ</th>
-              <th class="text-gray-600 font-semibold text-sm uppercase tracking-wider px-6 py-4 text-center">ສິດໃຊ້ງານ
-              </th>
-              <th class="text-gray-600 font-semibold text-sm uppercase tracking-wider px-6 py-4 text-center">
-                ເຂົ້າສູ່ລະບົບຫຼ້າສຸດ
-              </th>
-              <th class="text-gray-400 font-semibold text-xs uppercase tracking-wider px-6 py-4 text-center">ສະຖານະ</th>
-            </tr>
-          </thead>
+    <!-- Content -->
+    <div class="space-y-4">
+      <!-- Loading State -->
+      <div v-if="isLoading" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+        <span class="loading loading-spinner loading-lg text-primary"></span>
+        <p class="mt-4 text-gray-500 font-medium">ກຳລັງໂຫຼດຂໍ້ມູນລູກຄ້າ...</p>
+      </div>
 
-          <!-- Loading -->
-          <tbody v-if="isLoading">
-            <tr>
-              <td colspan="5" class="text-center py-16">
-                <span class="loading loading-spinner loading-lg text-primary"></span>
-                <p class="mt-3 text-gray-400">ກຳລັງໂຫຼດຂໍ້ມູນລູກຄ້າ...</p>
-              </td>
-            </tr>
-          </tbody>
+      <!-- Empty State -->
+      <div v-else-if="paginatedCustomers.length === 0"
+        class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+        <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Users class="w-8 h-8 text-gray-300" />
+        </div>
+        <h3 class="text-lg font-bold text-gray-900">ບໍ່ພົບຂໍ້ມູນ</h3>
+        <p class="text-gray-500">{{ searchQuery ? `ບໍ່ພົບຂໍ້ມູນທີ່ຄົ້ນຫາ "${searchQuery}"` :
+          'ຍັງບໍ່ມີລູກຄ້າໃນລະບົບເທື່ອ' }}</p>
+      </div>
 
-          <!-- Empty -->
-          <tbody v-else-if="paginatedCustomers.length === 0">
-            <tr>
-              <td colspan="5" class="text-center py-16">
-                <Users class="w-12 h-12 text-gray-200 mx-auto mb-3" />
-                <p class="text-gray-400 font-medium">{{ searchQuery ? 'ບໍ່ພົບຂໍ້ມູນທີ່ຄົ້ນຫາ' : 'ຍັງບໍ່ມີລູກຄ້າເທື່ອ.'
-                  }}</p>
-              </td>
-            </tr>
-          </tbody>
-
-          <!-- Rows -->
-          <tbody v-else>
-            <tr v-for="customer in paginatedCustomers" :key="customer.id"
-              class="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
-              <!-- Name + Avatar -->
-              <td class="px-6 py-5">
-                <div class="flex items-center gap-4">
-                  <div class="w-11 h-11 rounded-full overflow-hidden ring-2 flex-shrink-0"
-                    :class="isActive(customer) ? 'ring-green-400' : 'ring-gray-200'">
-                    <img :src="`https://api.dicebear.com/7.x/avataaars/svg?seed=${customer.name}`"
-                      class="w-full h-full object-cover" />
+      <!-- Desktop Table View -->
+      <div v-else class="hidden md:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="table w-full">
+            <thead>
+              <tr class="bg-gray-50/50">
+                <th class="px-6 py-4 text-gray-600 font-bold text-xs uppercase tracking-wider">ລູກຄ້າ</th>
+                <th class="px-6 py-4 text-gray-600 font-bold text-xs uppercase tracking-wider text-center">ເບີໂທ</th>
+                <th class="px-6 py-4 text-gray-600 font-bold text-xs uppercase tracking-wider text-center">ບົດບາດ</th>
+                <th class="px-6 py-4 text-gray-600 font-bold text-xs uppercase tracking-wider text-center">
+                  ເຂົ້າສູ່ລະບົບຫຼ້າສຸດ</th>
+                <th class="px-6 py-4 text-gray-600 font-bold text-xs uppercase tracking-wider text-center">ສະຖານະ</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+              <tr v-for="customer in paginatedCustomers" :key="customer.id"
+                class="hover:bg-gray-50/30 transition-colors">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 ring-2 ring-gray-100">
+                      <img :src="`https://api.dicebear.com/7.x/avataaars/svg?seed=${customer.name}`"
+                        class="w-full h-full object-cover" />
+                    </div>
+                    <div>
+                      <p class="font-bold text-gray-900">{{ customer.name }}</p>
+                      <p class="text-xs text-gray-500">{{ customer.email }}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p class="font-bold text-gray-900">{{ customer.name }}</p>
-                    <p class="text-xs text-gray-400">{{ customer.address || 'ບໍ່ມີທີ່ຢູ່' }}</p>
-                  </div>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-600 text-center">{{ customer.phone || '-' }}</td>
+                <td class="px-6 py-4 text-center">
+                  <span
+                    class="px-2 py-0.5 rounded-md bg-gray-100 text-gray-600 text-[10px] font-bold uppercase tracking-wider">
+                    {{ customer.role }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-500 text-center">{{ getLastLogin(customer.updatedAt) }}</td>
+                <td class="px-6 py-4 text-center">
+                  <button @click="toggleStatus(customer)"
+                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all hover:scale-105 active:scale-95"
+                    :class="customer.isActive ? 'bg-green-50 text-green-600 hover:bg-green-100' : 'bg-red-50 text-red-500 hover:bg-red-100'">
+                    <CheckCircle v-if="customer.isActive" class="w-3.5 h-3.5" />
+                    <XCircle v-else class="w-3.5 h-3.5" />
+                    {{ customer.isActive ? 'ໃຊ້ງານຢູ່' : 'ປິດໃຊ້ງານ' }}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Mobile Card View -->
+      <div v-if="!isLoading && paginatedCustomers.length > 0" class="md:hidden space-y-3">
+        <div v-for="customer in paginatedCustomers" :key="customer.id"
+          class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 active:bg-gray-50 transition-colors">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-full overflow-hidden ring-2 ring-gray-50 shadow-sm flex-shrink-0">
+                <img :src="`https://api.dicebear.com/7.x/avataaars/svg?seed=${customer.name}`"
+                  class="w-full h-full object-cover" />
+              </div>
+              <div>
+                <h3 class="font-bold text-gray-900 leading-none mb-1">{{ customer.name }}</h3>
+                <p class="text-xs text-gray-500">{{ customer.email }}</p>
+                <div class="mt-1 flex items-center gap-2">
+                  <span
+                    class="text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/5 px-1.5 py-0.5 rounded">
+                    {{ customer.role }}
+                  </span>
+                  <span class="text-[10px] text-gray-400 capitalize">{{ getLastLogin(customer.updatedAt) }}</span>
                 </div>
-              </td>
-              <!-- Email -->
-              <td class="px-6 py-5 text-sm text-gray-600">{{ customer.email }}</td>
-              <!-- Phone -->
-              <td class="px-6 py-5 text-sm text-gray-600 text-center">{{ customer.phone || 'N/A' }}</td>
-              <!-- Address -->
-              <td class="px-6 py-5 text-sm text-gray-600 text-center">{{ customer.role }}</td>
-              <!-- Last Login -->
-              <td class="px-6 py-5 text-sm text-gray-500 text-center">{{ getLastLogin(customer.updatedAt) }}</td>
-              <!-- Status -->
-              <td class="px-6 py-5 text-center">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold"
-                  :class="isActive(customer) ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'">
-                  <CheckCircle v-if="isActive(customer)" class="w-3.5 h-3.5" />
-                  <XCircle v-else class="w-3.5 h-3.5" />
-                  {{ isActive(customer) ? 'ໃຊ້ງານຢູ່' : 'ບໍ່ໄດ້ໃຊ້ງານ' }}
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </div>
+            </div>
+            <button @click="toggleStatus(customer)" class="p-2 rounded-xl transition-colors"
+              :class="customer.isActive ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'">
+              <CheckCircle v-if="customer.isActive" class="w-5 h-5" />
+              <XCircle v-else class="w-5 h-5" />
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 pt-3 border-t border-gray-50">
+            <div>
+              <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-0.5">ເບີໂທລະສັບ</p>
+              <p class="text-sm font-medium text-gray-700">{{ customer.phone || 'ບໍ່ມີຂໍ້ມູນ' }}</p>
+            </div>
+            <div>
+              <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-0.5">ສະຖານະ</p>
+              <p class="text-sm font-bold" :class="customer.isActive ? 'text-green-600' : 'text-red-500'">
+                {{ customer.isActive ? 'ເປີດໃຊ້ງານ' : 'ປິດໃຊ້ງານ' }}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Pagination -->
-      <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-        <p class="text-sm text-gray-600">
-          ກຳລັງສະແດງ {{ ((currentPage - 1) * perPage) + 1 }} ຫາ {{ Math.min(currentPage * perPage,
-            filteredCustomers.length) }} ຈາກທັງໝົດ {{ filteredCustomers.length }} ລາຍການ
+      <div
+        class="bg-white px-4 md:px-6 py-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-sm text-gray-500 order-2 sm:order-1">
+          ສະແດງ {{ ((currentPage - 1) * perPage) + 1 }} - {{ Math.min(currentPage * perPage, filteredCustomers.length)
+          }} ຈາກ {{ filteredCustomers.length }}
         </p>
-        <div class="flex items-center gap-1">
+        <div class="flex items-center gap-1 order-1 sm:order-2">
           <button @click="currentPage = Math.max(1, currentPage - 1)" :disabled="currentPage === 1"
-            class="btn btn-ghost btn-sm rounded-lg border border-gray-200 disabled:opacity-30">
-            <ChevronLeft class="w-4 h-4" />
+            class="p-2 rounded-lg border border-gray-100 hover:bg-gray-50 disabled:opacity-30 disabled:pointer-events-none transition-colors">
+            <ChevronLeft class="w-5 h-5" />
           </button>
-          <button v-for="page in totalPages" :key="page" @click="currentPage = page"
-            class="btn btn-sm rounded-lg min-w-[2.5rem] font-bold"
-            :class="currentPage === page ? 'btn-primary' : 'btn-ghost border border-gray-200'">
-            {{ page }}
-          </button>
+
+          <div class="flex items-center px-2">
+            <span class="text-sm font-bold text-gray-900">ໜ້າ {{ currentPage }} / {{ totalPages }}</span>
+          </div>
+
           <button @click="currentPage = Math.min(totalPages, currentPage + 1)" :disabled="currentPage === totalPages"
-            class="btn btn-ghost btn-sm rounded-lg border border-gray-200 disabled:opacity-30">
-            <ChevronRight class="w-4 h-4" />
+            class="p-2 rounded-lg border border-gray-100 hover:bg-gray-50 disabled:opacity-30 disabled:pointer-events-none transition-colors">
+            <ChevronRight class="w-5 h-5" />
           </button>
         </div>
       </div>
